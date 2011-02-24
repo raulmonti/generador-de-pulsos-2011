@@ -20,8 +20,11 @@
 #define RETL_INST_CODE 0x03
 #define FIN_INST_CODE 0x07
 
-
 #define INST_LENGTH 8 /*Numero de bytes de las instrucciones aceptadas por el pp2 */
+
+#define NO_ERROR_CODE 0
+#define BUSY_ERROR_CODE 1
+#define WRONG_INST_ERROR_CODE 2
 
  
 /****Escribe en el registro de instruccion la instruccion correspondiente inst 
@@ -35,9 +38,7 @@
     *Modifica: Nada
     *Retorna: codigo de error: 0 = ok
     * 		  				   1 = Error dispositivo ocupado
-    * 						   2 = Error de escritura
-    * 						   3 = Error desconocido
-    * 						   4 = Codigo de instruccion no valido 
+    * 						   2 = Codigo de instruccion no valido 
 *****/
 
 unsigned int pp2_write_instruction( unsigned int pattern, unsigned int data, 
@@ -49,8 +50,6 @@ unsigned int pp2_write_instruction( unsigned int pattern, unsigned int data,
     *Modifica: Pone a todos los registros de trabajo con su valor por defecto
     *Retorna: codigo de error: 0 = ok
     * 		  				   1 = Error dispositivo ocupado
-    * 						   2 = Error de escritura
-    * 						   3 = Error desconocido 
 *****/
 unsigned int pp2_full_reset(void);
 
@@ -59,8 +58,6 @@ unsigned int pp2_full_reset(void);
     *Modifica: El registro de comando del dispositivo
     *Retorna: codigo de error: 0 = ok
     * 		  				   1 = Error dispositivo ocupado
-    * 						   2 = Error de escritura
-    * 						   3 = Error desconocido 
 *****/
 unsigned int pp2_charge_mode_enabled(void);
 
@@ -71,8 +68,6 @@ unsigned int pp2_charge_mode_enabled(void);
     * 		   en el registro de instruccion
     *Retorna: codigo de error: 0 = ok
     * 		  				   1 = Error dispositivo ocupado
-    * 						   2 = Error de escritura
-    * 						   3 = Error desconocido 
 *****/
 unsigned int pp2_transfer_instruction(void);
 
@@ -81,8 +76,6 @@ unsigned int pp2_transfer_instruction(void);
     *Modifica: El estado del registro de comando del dispositivo
     *Retorna: codigo de error: 0 = ok
     * 		  				   1 = Error dispositivo ocupado
-    * 						   2 = Error de escritura
-    * 						   3 = Error desconocido 
 *****/
 unsigned int pp2_microprocessor_mode_enabled(void);
 
@@ -91,8 +84,6 @@ unsigned int pp2_microprocessor_mode_enabled(void);
     *Modifica: Nada
     *Retorna: codigo de error: 0 = ok
     * 		  				   1 = Error dispositivo ocupado
-    * 						   2 = Error de escritura
-    * 						   3 = Error desconocido 
 *****/
 unsigned int pp2_launch_pulse_sequense(void);
 

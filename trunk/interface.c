@@ -140,8 +140,8 @@ static bool get_id_and_delay(bstring line);
 	l = lexer_new(f);
 	assert(l != NULL);
 	
-	
-	
+	/***********CODIGO AGREGADO SOLO PARA HACER COMPILAR**************/
+	return true;
 	
 	
 	

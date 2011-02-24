@@ -46,13 +46,12 @@ unsigned int build_instruction (unsigned char *instruction,
                                 int loop_level, unsigned int delay, 
                                 unsigned int inst_code){
     unsigned char aux[2] = {0,0};
-    unsigned int result = 0;
+    unsigned int result = NO_ERROR_CODE;
       
     result = (inst_code == CONTINUE_INST_CODE || inst_code == LAZO_INST_CODE ||
               inst_code == RETL_INST_CODE || inst_code == FIN_INST_CODE );
 
-    if(result){
-        
+    if(result){        
         aux[1] = inst_code;
         loop_level = loop_level << 3;
         aux[1] = aux[1] | loop_level;
@@ -75,7 +74,7 @@ unsigned int build_instruction (unsigned char *instruction,
         instruction[0] = pattern;
         
     }else{
-        result = 2;                         /* Codigo de instruccion no valido */
+        result = WRONG_INST_ERROR_CODE;
     }
     
     return result;
@@ -87,14 +86,14 @@ unsigned int pp2_write_instruction( unsigned int pattern, unsigned int data,
                                     unsigned int inst_code){
     
     int i = 0;
-    unsigned int result = 0;
+    unsigned int result = NO_ERROR_CODE;
     unsigned char instruction[INST_LENGTH] = {0,0,0,0,0,0,0,0}; 
    
 
     if(!lpt_is_busy(LPT1_ADDR)){
         result = build_instruction(instruction, pattern, data, loop_level, 
                                    delay, inst_code);
-        if(result == 0){                               
+        if(result == NO_ERROR_CODE){                               
             for (i=INST_LENGTH-1; i>=0; i--){
                 result = lpt_send_byte(INSTRUCTION_REG_ADDR, instruction[i]);
                 if(result != 0) break;
@@ -106,7 +105,7 @@ unsigned int pp2_write_instruction( unsigned int pattern, unsigned int data,
 
 
 unsigned int pp2_full_reset(void){
-	unsigned int result = 0;
+	unsigned int result = NO_ERROR_CODE;
 	if(!lpt_is_busy(LPT1_ADDR)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, FULL_RESET);
 	}else{
@@ -116,7 +115,7 @@ unsigned int pp2_full_reset(void){
 }
 
 unsigned int pp2_charge_mode_enabled(void){
-	unsigned int result = 0;
+	unsigned int result = NO_ERROR_CODE;
 	if(!lpt_is_busy(LPT1_ADDR)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, CHARGE_MODE);
 	}else{
@@ -155,7 +154,3 @@ unsigned int pp2_launch_pulse_sequense(void){
 	}
 	return result;
 }
-
-
-
-

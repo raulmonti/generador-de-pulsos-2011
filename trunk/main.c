@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "instruction_sheet.h"
+#include "instruction.h"
+#include "pp2.h"
 
 unsigned int get_instruction_code(instruction inst){
     assert(inst != NULL);
