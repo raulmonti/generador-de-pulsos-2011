@@ -21,6 +21,8 @@ f_glist f_glist_create (void){
     f_glist fl = NULL;
     fl = calloc(1,sizeof(struct t_f_glist));
     assert(fl != NULL);
+    
+    
    
     return fl;
 }
