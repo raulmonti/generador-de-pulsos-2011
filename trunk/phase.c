@@ -18,9 +18,8 @@
 struct t_phase {
     unsigned int id;
     f_glist values;
-	unsigned int BaseAddr;
+	unsigned int baseAddr;
 };
-
 
 
 phase phase_create(unsigned int id){
@@ -92,17 +91,16 @@ void phase_print (phase p, int times){
 }
 
 
-
-void set_base_address(phase p, unsigned int BaseAddress){
+	
+void set_base_address(phase p, unsigned int baseAddress){
 
     /* PRE: */
     assert(p != NULL);
-	assert(BaseAddress < RAM_RANGE);
+	assert(baseAddress < RAM_RANGE);
 	
-	p->BaseAddr = BaseAddress;
+	p->baseAddr = baseAddress;
 
 }
-
 
 unsigned int get_mem_address(phase p, unsigned int iteration){
 	unsigned int result = 0,
@@ -117,11 +115,11 @@ unsigned int get_mem_address(phase p, unsigned int iteration){
 	assert(len != 0);
 	
 	index = iteration % len;
-	result = p->BaseAddr + index;
+	result = p->baseAddr + index;
 	
 	return result;
+	
 }
-
 
 /*
 
@@ -141,6 +139,8 @@ Valor:     3 8 6 4 3 8 6
 
 6 % 4 = 2 -> index = 2. Por lo tanto toma el valor 2
 
-*/
+Si quieren que la iteración comience desde 1, ponemos la siguiente linea:
+iteración--;
 
+*/
 
