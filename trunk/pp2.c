@@ -110,7 +110,7 @@ unsigned int pp2_full_reset(void){
 	if(!lpt_is_busy(LPT1_ADDR)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, FULL_RESET);
 	}else{
-		result = 1; /*Puerto ocupado*/
+		result = BUSY_ERROR_CODE;
 	}
 	return result;
 }
@@ -120,7 +120,7 @@ unsigned int pp2_charge_mode_enabled(void){
 	if(!lpt_is_busy(LPT1_ADDR)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, CHARGE_MODE);
 	}else{
-		result = 1; /*Puerto ocupado*/
+		result = BUSY_ERROR_CODE;
 	}
 	return result;
 }
@@ -130,7 +130,7 @@ unsigned int pp2_transfer_instruction(void){
 	if(!lpt_is_busy(LPT1_ADDR)){
 		result = lpt_send_byte(TRANSFER_REG_ADDR, 0x00);
 	}else{
-		result = 1; /*Puerto ocupado*/
+		result = BUSY_ERROR_CODE;
 	}
 	return result;
 }
@@ -141,17 +141,17 @@ unsigned int pp2_microprocessor_mode_enabled(void){
 	if(!lpt_is_busy(LPT1_ADDR)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, MICRO_MODE);
 	}else{
-		result = 1; /*Puerto ocupado*/
+		result = BUSY_ERROR_CODE;
 	}
 	return result;
 }
 
 unsigned int pp2_launch_pulse_sequense(void){
-	unsigned int result = 0;
+	unsigned int result = NO_ERROR_CODE;
 	if(!lpt_is_busy(LPT1_ADDR)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, LAUNCH_PULSE_SEQ);
 	}else{
-		result = 1; /*Puerto ocupado*/
+		result = BUSY_ERROR_CODE;
 	}
 	return result;
 }

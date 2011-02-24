@@ -1,7 +1,15 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-typedef enum inst_type {LOOP, ACQUIRE, PULSE, DELAY, ENDLOOP} instruction_type;
+/*typedef enum inst_type {LOOP, ACQUIRE, PULSE, DELAY, ENDLOOP, END} instruction_type;*/
+
+#define LOOP_INST_CODE 0
+#define ACQUIRE_INST_CODE 1
+#define PULSE_INST_CODE 2
+#define DELAY_INST_CODE 3
+#define ENDLOOP_INST_CODE 4
+#define END_INST_CODE 5
+
 typedef struct instruction_s *instruction;
 
 /****
@@ -43,8 +51,23 @@ unsigned int instruction_get_duration(instruction inst)
 	*Modifica: Nada
 	*Retorna: Nada
 *****/
-
 void instruction_print(instruction inst);
 
+/****
+	*Requiere: inst != NULL
+	*Modifica: Nada
+	*Retorna: El valor del campo data de la instruccion inst
+*****/
+unsigned int instruction_get_data(instruction inst);
+
+/****
+	*Requiere: inst != NULL
+	*Modifica: Nada
+	*Retorna: El valor del codigo del campo type de la instruccion inst
+*****/
+unsigned int instruction_get_type(instruction inst){
+	assert(inst != NULL);
+	return inst->type;
+}
 #endif
 

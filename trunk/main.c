@@ -2,18 +2,29 @@
 #include <stdlib.h>
 #include "instruction_sheet.h"
 
-
-unsigned char get_instruction_code(instruction inst){
+unsigned int get_instruction_code(instruction inst){
     assert(inst != NULL);
-    return  intruction_get_type(inst);
+    unsigned int result = 0;
+    switch(intruction_get_type(inst)){
+		case LOOP_INST_CODE:{ result = LAZO_INST_CODE;
+				break;}
+		case ACQUIRE_INST_CODE:{result = 0x00;
+								/*En este caso no interesa la instruccion ya /
+								 * que se debe disparar el conversor AD*/
+				break;}
+		case PULSE_INST_CODE:{result = CONTINUE_INST_CODE;
+				break;}
+		case DELAY_INST_CODE:{result = CONTINUE_INST_CODE;
+				break;}
+		case ENDLOOP_INST_CODE:{result = RETL_INST_CODE;
+				break;}
+		case END_INST_CODE:{result = FIN_INST_CODE;
+				break;}
+	}
+    return  ;
 }
 
-void get_data(instruction inst, unsigned char **data){
-    assert(inst != NULL);
-    
-}
-
-void get_pattern(instruction inst, unsigned char **pattern){
+void get_pattern(instruction inst, unsigned int *pattern){
     assert(inst != NULL);
     
 }
@@ -24,9 +35,9 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it ){
     instruction inst = NULL;
     int loop_level = -1; /*Al encontrar el primer loop se incrementa en 1 y 
                            quedamos en el nivel 0*/
-    unsigned char data[2] = {0,0};
-    unsigned char pattern[2] = {0,0};
-    unsigned char inst_code = 0;
+    unsigned int data;
+    unsigned int pattern;
+    unsigned int inst_code = 0;
     unsigned int duration = 0;
     
     if(pp2_full_reset()){
@@ -39,13 +50,13 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it ){
     
     for(i = 0; i < ins_count; i++){
         inst = instruction_sheet_get_nth_instruction(is, i);
-        get_data(inst, &data);
+        data = instruction_get_data(inst);
         get_pattern(inst, &pattern);
         duration = instruction_get_duration(inst);
         inst_code = get_instruction_code(inst);
-        if(inst_code == 0){/*Es una instruccion LOOP*/
+        if(inst_code == LOOP_INST_CODE){/*Es una instruccion LOOP*/
             loop_level++;
-        }else if(inst_code == 4){ /*Es una instruccion ENDLOOP*/
+        }else if(inst_code == ENDLOOP_INST_CODE){ /*Es una instruccion ENDLOOP*/
             loop_level--;
         }
         result = pp2_write_instruction(pattern, data, loop_level, 
