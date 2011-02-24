@@ -123,7 +123,7 @@ unsigned int build_instruction (unsigned char *instruction,
         instruction[1] = pattern[1];
         instruction[0] = pattern[0];
     }else{
-        result = 4; /* Codigo de instruccion no valido */
+        result = 2; /* Codigo de instruccion no valido */
     }
     
     return result;
@@ -144,7 +144,7 @@ unsigned int pp2_write_instruction(unsigned char *pattern, unsigned char *data,
     if(!lpt_is_busy(LPT1_ADDR)){
         result = build_instruction(instruction, pattern, data, loop_level, 
                                    delay, inst_code);
-        if(!result){                               
+        if(result == 0){                               
             for (i=INST_LENGTH-1; i>=0; i--){
                 result = lpt_send_byte(INSTRUCTION_REG_ADDR, instruction[i]);
                 if(result != 0) break;
@@ -206,22 +206,5 @@ unsigned int pp2_launch_pulse_sequense(void){
 	return result;
 }
 
-unsigned int pp2_load_instruction(unsigned char *pattern, unsigned char *data, 
-                                  unsigned char loop_level, unsigned char *delay, 
-                                  unsigned char inst_code){
-	unsigned int result = 0;
-	if(pp2_full_reset()){
-		return 1;
-	}else if(pp2_charge_mode_enabled()){
-		return 1;
-	}else{
-		result = pp2_write_instruction(pattern, data, loop_level, delay, inst_code);
-		 if(result == 1 || result == 2){
-			return result;
-		}else if(pp2_transfer_instruction()){
-			return 1;
-		}else{
-			return pp2_microprocessor_mode_enabled();
-		}
-	}
-}
+
+
