@@ -39,9 +39,10 @@
     * 						   3 = Error desconocido
     * 						   4 = Codigo de instruccion no valido 
 *****/
-unsigned int pp2_write_instruction(unsigned char *pattern, unsigned char *data, 
-                                   unsigned char loop_level, unsigned char *delay, 
-                                   unsigned char inst_code);
+
+unsigned int pp2_write_instruction( unsigned int pattern, unsigned int data, 
+                                    int loop_level, unsigned int delay, 
+                                    unsigned int inst_code);
 
 /****Resetea todos los registros del trabajo del dispositivo
     *Requiere: Nada
