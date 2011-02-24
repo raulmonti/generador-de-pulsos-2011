@@ -1,12 +1,9 @@
-TARGET=proyecto_v1.0
+TARGET=parser
 CC=gcc
-GLIB_CFLAGS = -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include/
-
-CFLAGS+= -Wall -Wbad-function-cast -Wcast-qual -Wno-unused-parameter   -g  $(GLIB_CFLAGS) 
-#falta -pedantic
-LDFLAGS=-lglib-2.0 -lm
+CFLAGS+= -O2 -ansi -Wall -Wextra -Wdeclaration-after-statement -Wbad-function-cast -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wno-unused-parameter -Werror -pedantic -g `pkg-config --cflags glib-2.0`
+LDFLAGS=`pkg-config --libs glib-2.0`
 SOURCES=$(shell echo *.c)
-
+BSTRING_OBJECTS=bstring/bstrlib.o
 OBJECTS=$(SOURCES:.c=.o)
 
 all: $(TARGET)
@@ -14,13 +11,11 @@ all: $(TARGET)
 # BString requiere flags distintos:
 $(BSTRING_OBJECTS):CFLAGS=-ansi -Wall -Werror -pedantic -g
 
-$(TARGET): $(OBJECTS)
-	$(CC) $^ -o $@ $(LDFLAGS) 
+$(TARGET): $(OBJECTS) $(BSTRING_OBJECTS)
+	$(CC) $^ -o $@ $(LDFLAGS)
 
 clean:
-	rm -f $(TARGET) $(OBJECTS) .depend *~
-
-
+	rm -f $(TARGET) $(OBJECTS)  $(BSTRING_OBJECTS) .depend *~
 
 .depend: *.[ch]
 	$(CC) -MM $(SOURCES) >.depend

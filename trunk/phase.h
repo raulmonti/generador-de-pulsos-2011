@@ -31,5 +31,9 @@ void phase_add_value(phase p, float degrees);
  */
 float phase_next_value(phase p);
 
+void set_base_address(phase p, unsigned int BaseAddress);
+
+unsigned int get_mem_address(phase p, unsigned int iteration);
+
 
 #endif

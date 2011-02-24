@@ -21,7 +21,7 @@ instruction_sheet instruction_sheet_create(void){
 
 instruction_sheet instruction_sheet_destroy(instruction_sheet inst_sheet){
 
-    int i = 0;
+    unsigned int i = 0;
     assert(inst_sheet != NULL);
 
     if (inst_sheet != NULL){
@@ -61,7 +61,7 @@ void instruction_sheet_add_instruction(instruction_sheet inst_sheet, instruction
 
 void instruction_sheet_print(instruction_sheet inst_sheet){
 
-    unsigned int i = 1;
+    unsigned int i = 0;
 
 	if(inst_sheet != NULL){
 
@@ -72,12 +72,41 @@ void instruction_sheet_print(instruction_sheet inst_sheet){
             i++;
         }
 
-        i = 1;
+        i = 0;
 
         while(i<g_list_length(inst_sheet->phase_list)){
             phase_print(g_list_nth_data(inst_sheet->phase_list, i), 1);
             i++;
         }
     }
+}
 
+instruction instruction_sheet_get_nth_instruction(instruction_sheet inst_sheet, unsigned int n){
+	instruction result = NULL;
+	
+	assert(inst_sheet != NULL);
+	
+	result = g_list_nth_data(inst_sheet->instruction_list, n);
+	
+	return result;
+}
+
+unsigned int instruction_sheet_instruction_count(instruction_sheet inst_sheet){
+	unsigned int count = 0;
+	
+	assert(inst_sheet != NULL);
+	
+	count = g_list_length(inst_sheet->instruction_list);
+	
+	return count;
+}
+
+unsigned int instruction_sheet_phase_count(instruction_sheet inst_sheet){
+	unsigned int count = 0;
+	
+	assert(inst_sheet != NULL);
+	
+	count = g_list_length(inst_sheet->phase_list);
+	
+	return count;
 }

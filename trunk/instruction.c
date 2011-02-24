@@ -15,8 +15,6 @@ instruction instruction_create(unsigned int id, instruction_type t, unsigned int
 
 	instruction inst = NULL;
 
-	assert(id>=0 && p>=0 && t>=0 && t<=3);
-
 	inst = calloc(1, sizeof(struct instruction_s));
     inst->id = id;
     inst-> type = t;
@@ -65,3 +63,5 @@ void instruction_print(instruction inst){
     printf("            duration: %u\n", inst->duration);
     printf("\n");    
 }
+
+

@@ -11,11 +11,14 @@
 #include <assert.h>
 
 #define DEBUG_ON
+#define RAM_RANGE 16 /* Espacio de ram: 0 .. RAM_RANGE - 1 */	
+	
 
 
 struct t_phase {
     unsigned int id;
     f_glist values;
+	unsigned int BaseAddr;
 };
 
 
@@ -87,4 +90,57 @@ void phase_print (phase p, int times){
     f_glist_print(p->values, times);
 
 }
+
+
+
+void set_base_address(phase p, unsigned int BaseAddress){
+
+    /* PRE: */
+    assert(p != NULL);
+	assert(BaseAddress < RAM_RANGE);
+	
+	p->BaseAddr = BaseAddress;
+
+}
+
+
+unsigned int get_mem_address(phase p, unsigned int iteration){
+	unsigned int result = 0,
+	             index = 0,
+				 len = 0;
+	
+	/* PRE: */
+	assert(p != NULL);
+	/* Desde 0 <= iteration < N° of Samples */
+	
+	len = f_glist_length(p->values);
+	assert(len != 0);
+	
+	index = iteration % len;
+	result = p->BaseAddr + index;
+	
+	return result;
+}
+
+
+/*
+
+Por ejemplo:
+Ph5 = 3 8 6 4
+Supongamos que la dirección base de la fase PH5 es 12:
+por lo tanto, tenemos en la ram:
+12: 3
+13: 8
+14: 6
+15: 4
+
+Contando la iteración i-ésima partiendo desde 0, en la 6°
+iteración PH5 debería tomar el valor 6,
+Iteración: 0 1 2 3 4 5 6 7
+Valor:     3 8 6 4 3 8 6
+
+6 % 4 = 2 -> index = 2. Por lo tanto toma el valor 2
+
+*/
+
 

@@ -21,8 +21,6 @@ f_glist f_glist_create (void){
     f_glist fl = NULL;
     fl = calloc(1,sizeof(struct t_f_glist));
     assert(fl != NULL);
-    
-    
    
     return fl;
 }
@@ -30,7 +28,7 @@ f_glist f_glist_create (void){
 
 f_glist f_glist_destroy (f_glist fl){
     
-    int i = 0;
+    unsigned int i = 0;
     
     assert(fl != NULL);
     

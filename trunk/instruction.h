@@ -1,7 +1,7 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-typedef enum inst_type {LOOP, ACQUIERE, PULSE, DELAY} instruction_type;
+typedef enum inst_type {LOOP, ACQUIRE, PULSE, DELAY} instruction_type;
 typedef struct instruction_s *instruction;
 
 /****

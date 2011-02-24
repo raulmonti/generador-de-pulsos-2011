@@ -45,5 +45,28 @@ void instruction_sheet_add_instruction(instruction_sheet inst_sheet, instruction
 
 void instruction_sheet_print(instruction_sheet inst_sheet);
 
+/****
+    *Requiere: inst_sheet != NULL
+    *Modifica: Nada
+    *Retorna: Un dato de tipo instruction que esta alojado en la posicion 
+    * 		  n-esima de inst_sheet comenzando desde las posicion 0.
+    * 		  En caso de un error que no viole la precondicion devuelve NULL
+*****/
+instruction instruction_sheet_get_nth_instruction(instruction_sheet inst_sheet, unsigned int n);
+
+/****
+    *Requiere: inst_sheet != NULL
+    *Modifica: Nada
+    *Retorna: La cantidad de intrucciones almacenadas en isnt_sheet
+*****/
+unsigned int instruction_sheet_instruction_count(instruction_sheet inst_sheet);
+
+/****
+    *Requiere: inst_sheet != NULL
+    *Modifica: Nada
+    *Retorna: La cantidad de intrucciones almacenadas en isnt_sheet
+*****/
+unsigned int instruction_sheet_phase_count(instruction_sheet inst_sheet);
+
 #endif
 

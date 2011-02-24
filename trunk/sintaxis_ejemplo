@@ -1,10 +1,9 @@
- phases:
-    ph1 = 1 2 3 4 5
-    ph2 = 6 7 8 9 0
- 
- program:
+phases:
+    ph7 = 1 2  3
+    ph9 = 10 21  31
+    ph3 = 11 78  17
+    
+program:
+    p1(ph7)
     d1
-    d3
-    p1(ph2)
-    d5
-    p5(ph1)
+    p2(ph7)
