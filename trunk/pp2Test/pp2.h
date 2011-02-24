@@ -24,6 +24,12 @@
 #define INST_LENGTH 8 /*Numero de bytes de las instrucciones aceptadas por el pp2 */
 
  
+unsigned int build_instruction (unsigned char *instruction, 
+                                unsigned int pattern, unsigned int data, 
+                                int loop_level, unsigned int delay, 
+                                unsigned int inst_code);
+ 
+ 
 /****Escribe en el registro de instruccion la instruccion correspondiente inst 
 	*y en caso de necesitar argumento lo toma de pattern. Los valores posibles 
 	*de inst son: 1 = CONTINUE
