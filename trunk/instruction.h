@@ -1,7 +1,7 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-typedef enum inst_type {LOOP, ACQUIRE, PULSE, DELAY} instruction_type;
+typedef enum inst_type {LOOP, ACQUIRE, PULSE, DELAY, ENDLOOP} instruction_type;
 typedef struct instruction_s *instruction;
 
 /****
@@ -21,12 +21,21 @@ instruction instruction_create(unsigned int id, instruction_type t, unsigned int
 instruction instruction_destroy(instruction inst);
 
 /****
-	*Requiere: d>=0
+	*Requiere: inst != NULL
 	*Modifica: El valor de la duracion de inst a d
 	*Retorna: Nada
 *****/
 
 void instruction_set_duration(instruction inst, unsigned int d);
+
+
+/****
+	*Requiere: inst != NULL
+	*Modifica: Nada
+	*Retorna: El valor de la duracion de inst
+*****/
+
+unsigned int instruction_get_duration(instruction inst)
 
 /****
 	* Imprime toda la instruccino inst por pantalla

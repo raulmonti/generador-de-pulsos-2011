@@ -96,10 +96,4 @@ unsigned int pp2_microprocessor_mode_enabled(void);
 unsigned int pp2_launch_pulse_sequense(void);
 
 
-unsigned int build_instruction (unsigned char *instruction, 
-                                unsigned char *pattern, unsigned char *data, 
-                                unsigned char loop_level, unsigned char *delay, 
-                                unsigned char inst_code);
-
-
 #endif

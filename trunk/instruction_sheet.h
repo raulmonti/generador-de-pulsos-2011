@@ -68,5 +68,21 @@ unsigned int instruction_sheet_instruction_count(instruction_sheet inst_sheet);
 *****/
 unsigned int instruction_sheet_phase_count(instruction_sheet inst_sheet);
 
+
+/****
+    *Requiere: inst_sheet != NULL
+    *Modifica: el campo times (cantidad de repeticiones)
+    *Retorna: nada
+*****/
+void instruction_sheet_set_times(instruction_sheet inst_sheet, unsigned int times)
+
+
+/****
+    *Requiere: inst_sheet != NULL
+    *Modifica: nada
+    *Retorna: el campo times (cantidad de repeticiones)
+*****/
+unsigned int instruction_sheet_get_times(instruction_sheet inst_sheet)
+
 #endif
 

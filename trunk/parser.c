@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "bstring/bstrlib.h"
 #include "instruction_sheet.h"
+#include "parser.h"
 
 #include "lexer.h"
 #define PHASES "phases:"
@@ -35,7 +36,74 @@ bool parse_delay_line(bstring line, instruction_sheet sheet);
 
 
 
+int parse (instruction_sheet *sheet, char *pulse_program){
 
+    FILE *file = NULL;
+    Lexer *l = NULL;
+    bstring item = NULL;
+    bool parse_ok = true;
+
+    file = fopen("sintaxis_ejemplo", "r");
+    if (file == NULL){
+        printf("El archivo no existe\n");
+        return 1;
+    }
+
+    l = lexer_new(file);
+
+
+    /* Declaraciones nuevas */
+    *sheet = instruction_sheet_create();
+
+    parse_ok = false;
+
+    item = get_line(l);
+    if (item == NULL) printf("Archivo vacío\n");
+    else parse_ok = phase_header(item);
+
+
+    if (parse_ok){
+        item = get_line(l);
+        while(item != NULL && is_phase_line(item) && parse_ok){
+            printf("Linea leida: %s\n", item->data);
+            parse_ok = parse_phase(item, *sheet);
+            bdestroy(item);
+            item = get_line(l);
+        }
+    }else{
+        printf("No se encuentra 'phases:'\n");
+    }
+
+    if(item != NULL) parse_ok = program_header(item);
+    if (parse_ok){
+        item = get_line(l);
+        while(item != NULL && is_program_line(item) && parse_ok){
+            printf("Linea leida: %s\n", item->data);
+            if (line_begin_with (item, PULSE)){
+                parse_ok = parse_pulse(item, *sheet);
+            }
+        
+            if (line_begin_with (item, DELAY)){
+                parse_ok = parse_delay_line(item, *sheet);
+            }
+        
+            bdestroy(item);
+            item = get_line(l);
+        }
+
+        if (item != NULL) printf("Error en el bloque 'program'\n");
+      
+    }else{
+        printf("No se encuentra 'program:'\n");
+    }
+
+    printf("\n\n\n");
+    instruction_sheet_print(*sheet);
+  
+    return 0;
+}
+
+/*
 int main(void){
   FILE *file = NULL;
   Lexer *l = NULL;
@@ -53,7 +121,7 @@ int main(void){
   l = lexer_new(file);
   
   
-  /* Declaraciones nuevas */
+  * Declaraciones nuevas *
   sheet = instruction_sheet_create();
   
   
@@ -123,6 +191,7 @@ int main(void){
   return 0;
 }
 
+*/
 
 bool consume_spaces(Lexer *l){
 #define SPACE " "

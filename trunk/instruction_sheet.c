@@ -8,12 +8,14 @@
 struct inst_sheet_s {
     GList* instruction_list;
     GList* phase_list;
+    unsigned int times; /*Numero de veces que se realiza el experimento*/
 };
 
 instruction_sheet instruction_sheet_create(void){
     instruction_sheet inst_sheet = calloc(1, sizeof(struct inst_sheet_s));
     inst_sheet->instruction_list = NULL;
     inst_sheet->phase_list = NULL;
+    inst_sheet->times = 0;
 
     return inst_sheet;
 
@@ -110,3 +112,21 @@ unsigned int instruction_sheet_phase_count(instruction_sheet inst_sheet){
 	
 	return count;
 }
+
+
+void instruction_sheet_set_times(instruction_sheet inst_sheet, unsigned int times){
+
+    assert(inst_sheet != NULL);
+    inst_sheet->times = times;
+
+}
+
+
+
+unsigned int instruction_sheet_get_times(instruction_sheet inst_sheet){
+
+    assert(inst_sheet != NULL);
+    return inst_sheet->times;
+
+}
+

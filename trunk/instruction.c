@@ -39,8 +39,16 @@ instruction instruction_destroy(instruction inst){
 
 
 void instruction_set_duration(instruction inst, unsigned int d){
+    assert(isnt != NULL);
     inst->duration = d;
 }
+
+
+unsigned int instruction_get_duration(instruction inst){
+    assert(inst != NULL);
+    return inst->duration;
+}
+
 
 void instruction_print(instruction inst){
     printf("Instruction:\n");    
