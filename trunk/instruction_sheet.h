@@ -74,7 +74,7 @@ unsigned int instruction_sheet_phase_count(instruction_sheet inst_sheet);
     *Modifica: el campo times (cantidad de repeticiones)
     *Retorna: nada
 *****/
-void instruction_sheet_set_times(instruction_sheet inst_sheet, unsigned int times)
+void instruction_sheet_set_times(instruction_sheet inst_sheet, unsigned int times);
 
 
 /****
@@ -82,7 +82,20 @@ void instruction_sheet_set_times(instruction_sheet inst_sheet, unsigned int time
     *Modifica: nada
     *Retorna: el campo times (cantidad de repeticiones)
 *****/
-unsigned int instruction_sheet_get_times(instruction_sheet inst_sheet)
+unsigned int instruction_sheet_get_times(instruction_sheet inst_sheet);
 
+/****
+    *Requiere: inst_sheet != NULL
+    *Modifica: nada
+    *Retorna: el campo path (ruta de la hoja de pulsos)
+*****/
+char *instruction_get_pulse_sheet_path(instruction_sheet inst_sheet);
+
+/****
+    *Requiere: inst_sheet != NULL y path != NULL
+    *Modifica: Setea el valor del campo path de la hoja de pulsos
+    *Retorna: Nada
+*****/
+void instruction_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path);
 #endif
 

@@ -1,13 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "instruction_sheet.h"
 #include "instruction.h"
 #include "pp2.h"
+#include "parser.h"
+
+unsigned int get_instruction_code(instruction inst);
+void get_pattern(instruction inst, unsigned int *pattern);
+unsigned int load_program (instruction_sheet is, unsigned int current_it);
 
 unsigned int get_instruction_code(instruction inst){
-    assert(inst != NULL);
     unsigned int result = 0;
-    switch(intruction_get_type(inst)){
+    
+    assert(inst != NULL);
+    
+    switch(instruction_get_type(inst)){
 		case LOOP_INST_CODE:{ result = LAZO_INST_CODE;
 				break;}
 		case ACQUIRE_INST_CODE:{result = 0x00;
@@ -23,7 +31,7 @@ unsigned int get_instruction_code(instruction inst){
 		case END_INST_CODE:{result = FIN_INST_CODE;
 				break;}
 	}
-    return  ;
+    return  result;
 }
 
 void get_pattern(instruction inst, unsigned int *pattern){
@@ -31,7 +39,7 @@ void get_pattern(instruction inst, unsigned int *pattern){
     
 }
 
-unsigned int load_program (instruction_sheet is, unsigned int current_it ){
+unsigned int load_program (instruction_sheet is, unsigned int current_it){
     
     unsigned int ins_count = 0, i = 0;
     instruction inst = NULL;
@@ -41,6 +49,7 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it ){
     unsigned int pattern;
     unsigned int inst_code = 0;
     unsigned int duration = 0;
+    unsigned int result = 0;
     
     if(pp2_full_reset()){
 		return 1;
@@ -71,13 +80,15 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it ){
 			return 1;
 		}
     }
+    return result;
 }
 
 
 int main ( int argc, char *argv[]){
 
     instruction_sheet inst_sheet = NULL;
-    int current_it = 0, times;    
+    int current_it = 0, times; 
+    unsigned int result = 0;   
 
     if(argc != 3){
         printf("Error. Uso: ./rmnPulseGenerator \
@@ -94,9 +105,9 @@ int main ( int argc, char *argv[]){
     }
     
     /*****************CARGAR DELAYS y DEMAS DATOS**********/
-    generate_configuration_sheet(inst_sheet);
+    /*generate_configuration_sheet(inst_sheet);
 
-    set_delay_values(inst_sheet);
+    set_delay_values(inst_sheet);*/
     
     /*****************CARGAR LA RAM FASE*******************/
     

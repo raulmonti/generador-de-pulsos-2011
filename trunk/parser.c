@@ -43,14 +43,14 @@ int parse (instruction_sheet *sheet, char *pulse_program){
     bstring item = NULL;
     bool parse_ok = true;
 
-    file = fopen("sintaxis_ejemplo", "r");
+    file = fopen(pulse_program, "r");
     if (file == NULL){
         printf("El archivo no existe\n");
         return 1;
     }
 
     l = lexer_new(file);
-
+	instruction_set_pulse_sheet_path(*sheet, pulse_program);
 
     /* Declaraciones nuevas */
     *sheet = instruction_sheet_create();
@@ -403,10 +403,11 @@ bool parse_pulse(bstring line, instruction_sheet sheet){
     FILE *fstream = NULL;
     Lexer *l = NULL;
     bool parse_ok = true;
+    unsigned int pulse_id = 0;
+    int pulse_type = 2;
     
     instruction instr = NULL;
     
-   
     assert(line != NULL);
     assert(line_begin_with(line, PULSE));
     
@@ -431,10 +432,7 @@ bool parse_pulse(bstring line, instruction_sheet sheet){
         assert(!lexer_is_off(l));
         item = lexer_item(l);
         if (blength(item) == 0) parse_ok = false;
-        else{
-            unsigned int pulse_id = 0;
-            instruction_type pulse_type = 2;
-            
+        else{            
             pulse_id = atoi((const char*) item->data);
             instr = instruction_create(pulse_id, pulse_type, 0);
         }
@@ -542,7 +540,7 @@ bool parse_delay_line(bstring line, instruction_sheet sheet){
         else{ 
             /* instruction instruction_create(unsigned int id, instruction_type t, unsigned int p); */   
             unsigned int delay_id = 0;
-            instruction_type pulse_type = 3;
+            int pulse_type = 3;
             
             delay_id = atoi((const char*) item->data);
             instr = instruction_create(delay_id, pulse_type, 0);

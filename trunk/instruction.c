@@ -10,7 +10,7 @@ struct instruction_s{
     unsigned int duration;
 };
 
-instruction instruction_create(unsigned int id, instruction_type t, unsigned int p){
+instruction instruction_create(unsigned int id, int t, unsigned int p){
 
 	instruction inst = NULL;
 
@@ -38,7 +38,7 @@ instruction instruction_destroy(instruction inst){
 
 
 void instruction_set_duration(instruction inst, unsigned int d){
-    assert(isnt != NULL);
+    assert(inst != NULL);
     inst->duration = d;
 }
 
@@ -84,4 +84,9 @@ unsigned int instruction_get_data(instruction inst){
 unsigned int instruction_get_type(instruction inst){
 	assert(inst != NULL);
 	return inst->type;
+}
+
+unsigned int instruction_get_id(instruction inst){
+	assert(inst != NULL);
+	return inst->id;
 }

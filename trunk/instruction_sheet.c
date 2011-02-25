@@ -9,6 +9,7 @@ struct inst_sheet_s {
     GList* instruction_list;
     GList* phase_list;
     unsigned int times; /*Numero de veces que se realiza el experimento*/
+    char *pulse_sheet_path;
 };
 
 instruction_sheet instruction_sheet_create(void){
@@ -130,3 +131,15 @@ unsigned int instruction_sheet_get_times(instruction_sheet inst_sheet){
 
 }
 
+char *instruction_get_pulse_sheet_path(instruction_sheet inst_sheet){
+
+    assert(inst_sheet != NULL);
+    return inst_sheet->pulse_sheet_path;
+}
+
+void instruction_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path){
+	assert(inst_sheet != NULL);
+	assert(path != NULL);
+	
+    inst_sheet->pulse_sheet_path = path;
+}

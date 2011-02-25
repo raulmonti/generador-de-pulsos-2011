@@ -1,8 +1,6 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-/*typedef enum inst_type {LOOP, ACQUIRE, PULSE, DELAY, ENDLOOP, END} instruction_type;*/
-
 #define LOOP_INST_CODE 0
 #define ACQUIRE_INST_CODE 1
 #define PULSE_INST_CODE 2
@@ -13,12 +11,12 @@
 typedef struct instruction_s *instruction;
 
 /****
-	*Requiere: id>=0 y p>=0 y t=LOOP o t=ACQUIERE o t=DELAY o t=PULSE
+	*Requiere: t=LOOP o t=ACQUIERE o t=DELAY o t=PULSE
 	*Modifica: Nada
 	*Retorna: Una nueva instancia de una instruccion con identificador id, de tipo
 	*           type, parametro p y duracion 0
 *****/
-instruction instruction_create(unsigned int id, instruction_type t, unsigned int p);
+instruction instruction_create(unsigned int id, int t, unsigned int p);
 
 /****
 	*Requiere: Nada
@@ -43,7 +41,7 @@ void instruction_set_duration(instruction inst, unsigned int d);
 	*Retorna: El valor de la duracion de inst
 *****/
 
-unsigned int instruction_get_duration(instruction inst)
+unsigned int instruction_get_duration(instruction inst);
 
 /****
 	* Imprime toda la instruccino inst por pantalla
@@ -65,9 +63,14 @@ unsigned int instruction_get_data(instruction inst);
 	*Modifica: Nada
 	*Retorna: El valor del codigo del campo type de la instruccion inst
 *****/
-unsigned int instruction_get_type(instruction inst){
-	assert(inst != NULL);
-	return inst->type;
-}
+unsigned int instruction_get_type(instruction inst);
+
+/****
+	*Requiere: inst != NULL
+	*Modifica: Nada
+	*Retorna: El valor el id de la instruccion inst
+*****/
+unsigned int instruction_get_id(instruction inst);
+
 #endif
 
