@@ -24,6 +24,7 @@
 bstring get_line(Lexer *l);
 bool consume_spaces(Lexer *l);
 bool line_begin_with (bstring line, const char* pattern);
+static bool is_blank_line(Lexer *l);
 
 bool is_program_line(bstring line);
 bool is_phase_line(bstring line);
@@ -514,10 +515,11 @@ bool parse_delay_line(bstring line, instruction_sheet sheet){
     int line_len = 0;
     FILE *fstream = NULL;
     Lexer *l = NULL;
-    
-    bool parse_ok = true;
     instruction instr = NULL;
+    bool parse_ok = true;
     
+    /* PRE: */
+    assert(sheet != NULL);
     assert(line != NULL);
     assert(line_begin_with(line, DELAY));
     
@@ -540,18 +542,20 @@ bool parse_delay_line(bstring line, instruction_sheet sheet){
     
     if (parse_ok){
         assert(!lexer_is_off(l));
+        
         item = lexer_item(l);
         if (blength(item) == 0) parse_ok = false;
-        else{ 
-            /* instruction instruction_create(unsigned int id, instruction_type t, unsigned int p); */   
+        else{
             unsigned int delay_id = 0;
-            int pulse_type = 3;
-            
+                        
             delay_id = atoi((const char*) item->data);
-            instr = instruction_create(delay_id, pulse_type, 0);
+            instr = instruction_create(delay_id, DELAY_INST_CODE, 0);
         }
         bdestroy(item);
     }
+    
+    if (parse_ok) 
+        parse_ok = is_blank_line(l);
 
     if (parse_ok)
         instruction_sheet_add_instruction(sheet, instr);
@@ -562,4 +566,29 @@ bool parse_delay_line(bstring line, instruction_sheet sheet){
     return parse_ok;
 
 }
+
+static bool is_blank_line(Lexer *l){
+    bstring item = NULL;
+    bool result = true;
+    
+    /* PRE: */
+    assert(l != NULL);
+    
+    if(!lexer_is_off(l)){
+        lexer_next(l, BLANK);
+        if (!lexer_is_off(l)){
+            item = lexer_item(l);
+            bltrimws(item);
+            brtrimws(item);
+            
+            result = blength(item) == 0;            
+            
+            bdestroy(item);   
+        }
+    }
+
+    return result;
+
+}
+
 

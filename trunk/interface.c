@@ -28,6 +28,7 @@ static iarray iarray_destroy(iarray array);
 static unsigned int iarray_len(iarray array);
 static int iarray_nth_item(iarray array, unsigned int i);
 
+static void fill_iarray(instruction_sheet sheet, iarray delay_list, iarray pulse_list);
 static bool get_id_and_delay(Lexer *l, unsigned int* type,unsigned int* id, unsigned int* delay);
  
 
@@ -60,6 +61,42 @@ static bool get_id_and_delay(Lexer *l, unsigned int* type,unsigned int* id, unsi
   -----------------------------
   
  */
+
+static void fill_iarray(instruction_sheet sheet, iarray delay_list, iarray pulse_list){
+    unsigned int len = 0,
+	             i = 0;
+    instruction aux = NULL;
+    unsigned int instruction_id = 0;
+    
+    /* PRE: */
+    assert(sheet != NULL);
+    assert(delay_list != NULL);
+    assert(pulse_list != NULL);
+    
+    len = instruction_sheet_instruction_count(sheet);
+    assert(len != 0);
+
+    for(i = 0; i < len; i++){
+		
+		aux = instruction_sheet_get_nth_instruction(sheet, i);
+		assert(aux != NULL);
+        
+        instruction_id = instruction_get_id(aux);
+        
+		if (instruction_get_type(aux) == PULSE_INST_CODE)
+			if (!iarray_checkvalue(pulse_list, instruction_id))
+                iarray_add(pulse_list, instruction_id);
+			
+		if (instruction_get_type(aux) == DELAY_INST_CODE)
+			if (!iarray_checkvalue(delay_list, instruction_id))
+				iarray_add(delay_list, instruction_id);
+	
+    
+    }
+
+}
+ 
+ 
 void generate_configuration_sheet(instruction_sheet sheet, const char* filepath){
 
 	unsigned int len = 0,
@@ -90,27 +127,14 @@ void generate_configuration_sheet(instruction_sheet sheet, const char* filepath)
 	delay_list = iarray_create();
 	pulse_list = iarray_create();
 	
-	for(i = 0; i < len; i++){
-		
-		aux = instruction_sheet_get_nth_instruction(sheet, i);
-		assert(aux != NULL);
-        
-        instruction_id = instruction_get_id(aux);
-        
-		if (instruction_get_type(aux) == PULSE_INST_CODE)
-			if (!iarray_checkvalue(pulse_list, instruction_id))
-                iarray_add(pulse_list, instruction_id);
-			
-		if (instruction_get_type(aux) == DELAY_INST_CODE)
-			if (!iarray_checkvalue(delay_list, instruction_id))
-				iarray_add(delay_list, instruction_id);
-	
-    }
-    
+	    
+    fill_iarray(sheet, delay_list, pulse_list);
     
     for(i = 0; i < iarray_len(pulse_list); i++){
         
         instruction_id = iarray_nth_item(pulse_list, i);
+        
+        
         instr_id_str = bformat("%i", instruction_id);
         assert(instr_id_str);
         
@@ -151,11 +175,45 @@ void generate_configuration_sheet(instruction_sheet sheet, const char* filepath)
 	
 	delay_list = iarray_destroy(delay_list);
 	pulse_list = iarray_destroy(pulse_list);
+	fclose(f);
 	
  }
  
+ bool set_delay_values_from_stdin(instruction_sheet sheet){
+    iarray delay_list = NULL,
+           pulse_list = NULL;
+    unsigned int i = 0,
+                 instruction_id = 0,
+                 instruction_delay = 0;
+    bool result = 0;
+    
+    /* PRE: */
+    assert(sheet != NULL);
+    
+    delay_list = iarray_create();
+	pulse_list = iarray_create();
+	
+	    
+    fill_iarray(sheet, delay_list, pulse_list);
+    for(i = 0; i < iarray_len(pulse_list); i++){
+        instruction_id = iarray_nth_item(pulse_list, i);
+        printf("p%i:", instruction_id);
+        scanf("%u", &instruction_delay);
+        instruction_sheet_set_delay(sheet, PULSE_INST_CODE, instruction_id, instruction_delay);
+    }
  
- bool set_delay_values(instruction_sheet sheet, const char* filename){
+    for(i = 0; i < iarray_len(delay_list); i++){
+        instruction_id = iarray_nth_item(delay_list, i);
+        printf("d%i:", instruction_id);
+        scanf("%u", &instruction_delay);
+        instruction_sheet_set_delay(sheet, DELAY_INST_CODE, instruction_id, instruction_delay);
+    }
+ 
+    return result;
+ 
+ }
+ 
+ bool set_delay_values_from_file(instruction_sheet sheet, const char* filename){
 	FILE *f = NULL;
 	Lexer *l = NULL;
 	bool result = true;
@@ -190,7 +248,6 @@ void generate_configuration_sheet(instruction_sheet sheet, const char* filepath)
 	
  
  }
- 
  
 static bool get_id_and_delay(Lexer *l, unsigned int* type,unsigned int* id, unsigned int* delay){
 	bool result = true;

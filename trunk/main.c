@@ -109,9 +109,10 @@ int main ( int argc, char *argv[]){
     }
     
     /*****************CARGAR DELAYS y DEMAS DATOS**********//*LISTOOOOOO*/
-/*    generate_configuration_sheet(inst_sheet, "config");*/
-
-    set_delay_values(inst_sheet, "config_conf");
+    generate_configuration_sheet(inst_sheet, "prueba_config");
+    set_delay_values_from_stdin(inst_sheet);
+    instruction_sheet_print(inst_sheet);
+    /*set_delay_values(inst_sheet, "config_conf");*/
     
     /*****************CARGAR LA RAM FASE*******************/
 
@@ -133,6 +134,9 @@ int main ( int argc, char *argv[]){
         current_it++;        
     }*/
     /*¿como sabemos cuando termina de correr el programa*/
+    
+    
+    
     
 
     
