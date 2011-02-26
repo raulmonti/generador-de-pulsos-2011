@@ -8,6 +8,7 @@
 #include "parser.h"
 
 #include "lexer.h"
+
 #define PHASES "phases:"
 #define PROGRAM "program:"
 #define NEWLINE "\n"
@@ -36,25 +37,28 @@ bool parse_delay_line(bstring line, instruction_sheet sheet);
 
 
 
-int parse (instruction_sheet *sheet, char *pulse_program){
+instruction_sheet parse (char *pulse_program){
 
     FILE *file = NULL;
     Lexer *l = NULL;
     bstring item = NULL;
     bool parse_ok = true;
+    instruction_sheet sheet = NULL;
 
     file = fopen(pulse_program, "r");
     if (file == NULL){
         printf("El archivo no existe\n");
-        return 1;
+        return NULL;
     }
 
     l = lexer_new(file);
-	instruction_set_pulse_sheet_path(*sheet, pulse_program);
+    assert(l != NULL);
 
-    /* Declaraciones nuevas */
-    *sheet = instruction_sheet_create();
-
+    sheet = instruction_sheet_create();
+    assert(sheet != NULL);
+    
+    instruction_set_pulse_sheet_path(sheet, pulse_program);
+    
     parse_ok = false;
 
     item = get_line(l);
@@ -66,7 +70,7 @@ int parse (instruction_sheet *sheet, char *pulse_program){
         item = get_line(l);
         while(item != NULL && is_phase_line(item) && parse_ok){
             printf("Linea leida: %s\n", item->data);
-            parse_ok = parse_phase(item, *sheet);
+            parse_ok = parse_phase(item, sheet);
             bdestroy(item);
             item = get_line(l);
         }
@@ -80,12 +84,14 @@ int parse (instruction_sheet *sheet, char *pulse_program){
         while(item != NULL && is_program_line(item) && parse_ok){
             printf("Linea leida: %s\n", item->data);
             if (line_begin_with (item, PULSE)){
-                parse_ok = parse_pulse(item, *sheet);
+                parse_ok = parse_pulse(item, sheet);
             }
         
             if (line_begin_with (item, DELAY)){
-                parse_ok = parse_delay_line(item, *sheet);
+                parse_ok = parse_delay_line(item, sheet);
             }
+        
+            if (!parse_ok) printf("Error en la linea:\n%s", item->data);
         
             bdestroy(item);
             item = get_line(l);
@@ -97,10 +103,11 @@ int parse (instruction_sheet *sheet, char *pulse_program){
         printf("No se encuentra 'program:'\n");
     }
 
-    printf("\n\n\n");
-    instruction_sheet_print(*sheet);
-  
-    return 0;
+    if (!parse_ok){
+        sheet = instruction_sheet_destroy(sheet);
+    }
+    
+    return sheet;
 }
 
 /*

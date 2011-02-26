@@ -3,6 +3,6 @@
 
 #include "instruction_sheet.h"
 
-int parse (instruction_sheet *sheet, char *pulse_program);
+instruction_sheet parse (char *pulse_program);
 
 #endif

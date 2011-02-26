@@ -100,7 +100,8 @@ unsigned int instruction_sheet_instruction_count(instruction_sheet inst_sheet){
 	assert(inst_sheet != NULL);
 	
 	count = g_list_length(inst_sheet->instruction_list);
-	
+	printf("-- COUNT: %i\n", count);
+    
 	return count;
 }
 

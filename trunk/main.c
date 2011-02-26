@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "instruction_sheet.h"
 #include "instruction.h"
+#include "interface.h"
 #include "pp2.h"
 #include "parser.h"
 
@@ -98,16 +99,16 @@ int main ( int argc, char *argv[]){
     }
     
     /****************PARSEAR HOJA DE PULSOS****************/
-    result = parse (&inst_sheet, argv[1]);
-    if(result != 0){
+    inst_sheet = parse(argv[1]);
+    if(inst_sheet == NULL){
         printf("Error:(mostrar mensaje de error devuelto) codigo: %i\n",result);
         return 0;
     }
     
     /*****************CARGAR DELAYS y DEMAS DATOS**********/
-    /*generate_configuration_sheet(inst_sheet);
+/*    generate_configuration_sheet(inst_sheet, "config");*/
 
-    set_delay_values(inst_sheet);*/
+    set_delay_values(inst_sheet, "config_conf");
     
     /*****************CARGAR LA RAM FASE*******************/
     

@@ -1,7 +1,10 @@
 #include "interface.h"
 
 #include <stdlib.h>
+#include <assert.h>
 #include "lexer.h"
+
+
 
 #define INITIAL_LEN 30
 #define INCREMENT   20
@@ -14,15 +17,18 @@ struct array_t{
 	unsigned int max_len;
  };
 
- typedef struct array_t *iarray;
+typedef struct array_t *iarray;
  
+
  /* Funciones Auxiliares */
-static iarray iarray_create();
+static iarray iarray_create(void);
 static void iarray_add(iarray array, int value);
 static bool iarray_checkvalue(iarray, int value);
 static iarray iarray_destroy(iarray array);
+static unsigned int iarray_len(iarray array);
+static int iarray_nth_item(iarray array, unsigned int i);
 
-static bool get_id_and_delay(bstring line); 
+static bool get_id_and_delay(Lexer *l, unsigned int* id, unsigned int* delay);
  
 
  /*
@@ -44,7 +50,7 @@ static bool get_id_and_delay(bstring line);
 	p5(ph1)
   ----------------------------
   
-  Generaría:
+  Generarï¿½a:
   configuration_sheet: archivoprueba_conf
   -----------------------------
   d1:
@@ -54,7 +60,7 @@ static bool get_id_and_delay(bstring line);
   -----------------------------
   
  */
-  void generate_configuration_sheet(instruction_sheet sheet){
+void generate_configuration_sheet(instruction_sheet sheet, const char* filepath){
 
 	unsigned int len = 0,
 	             i = 0,
@@ -65,53 +71,83 @@ static bool get_id_and_delay(bstring line);
 	        line = NULL;
 	iarray delay_list = NULL,
 	       pulse_list = NULL;
+    bstring instr_id_str = NULL;
+           
+    unsigned int instruction_id = 0;
 	
-	/* PRE: */
+	
 	assert(sheet != NULL);
 	
 	len = instruction_sheet_instruction_count(sheet);
-	assert(len != 0);
+    assert(len != 0);
 	
-	filenameconf = bstrcpy(sheet->path);
+	filenameconf = bfromcstr(filepath);
 	assert(filenameconf != NULL);
 	
 	bcatcstr(filenameconf, SUFFIX);
 	
-	f = fopen(filenameconf->data, "w");
+	f = fopen((const char*)filenameconf->data, "w");
 	delay_list = iarray_create();
 	pulse_list = iarray_create();
 	
 	for(i = 0; i < len; i++){
-		line = bfromcstr("");
+		
 		aux = instruction_sheet_get_nth_instruction(sheet, i);
 		assert(aux != NULL);
-	
-		if (get_instruction_type == PULSE){
-			if (!iarray_checkvalue(pulse_list, instruction_id)){
-				iarray_add(pulse_list, instruction_id);
-				bcatcstr(line, "p");
-				bcatcstr(line, instruction_id);
-				bcatcstr(line, ":\n");
-			}
+        
+        instruction_id = instruction_get_id(aux);
+        
+		if (instruction_get_type(aux) == PULSE_INST_CODE)
+			if (!iarray_checkvalue(pulse_list, instruction_id))
+                iarray_add(pulse_list, instruction_id);
 			
-	
-		}
-		
-		if (get_instruction_type == DELAY){
-			if (!iarray_checkvalue(delay_list, instruction_id)){
+		if (instruction_get_type(aux) == DELAY_INST_CODE)
+			if (!iarray_checkvalue(delay_list, instruction_id))
 				iarray_add(delay_list, instruction_id);
-				bcatcstr(line, "d");
-				bcatcstr(line, instruction_id);
-				bcatcstr(line, ":\n");
-			}
-		}
-		
-		line_len = blength(line);
-		if (line_len != 0)
-			fwrite((void*)line->data, 1, line_len, f);			
-			
-		bdestroy(line);
-	}
+	
+    }
+    
+    
+    for(i = 0; i < iarray_len(pulse_list); i++){
+        
+        instruction_id = iarray_nth_item(pulse_list, i);
+        instr_id_str = bformat("%i", instruction_id);
+        assert(instr_id_str);
+        
+        line = bfromcstr("");
+        
+        bcatcstr(line, "p");
+        bconcat(line, instr_id_str);
+        bcatcstr(line, ":\n");
+        
+        line_len = blength(line);
+        fwrite((void*)line->data, 1, line_len, f);
+        
+        bdestroy(line);
+        bdestroy(instr_id_str);
+    }
+    
+    for(i = 0; i < iarray_len(delay_list); i++){
+        
+        instruction_id = iarray_nth_item(delay_list, i);
+        instr_id_str = bformat("%i", instruction_id);
+        assert(instr_id_str);
+        
+        line = bfromcstr("");
+        
+        bcatcstr(line, "d");
+        bconcat(line, instr_id_str);
+        bcatcstr(line, ":\n");
+        
+        line_len = blength(line);
+        fwrite((void*)line->data, 1, line_len, f);
+        
+        bdestroy(line);
+        bdestroy(instr_id_str);
+    }
+    
+
+        
 	
 	delay_list = iarray_destroy(delay_list);
 	pulse_list = iarray_destroy(pulse_list);
@@ -119,29 +155,33 @@ static bool get_id_and_delay(bstring line);
  }
  
  
- bool set_delay_values(instruction_sheet sheet){
+ bool set_delay_values(instruction_sheet sheet, const char* filename){
 	FILE *f = NULL;
-	bstring filenameconf = NULL,
-	        item = NULL;
 	Lexer *l = NULL;
 	bool result = true;
-	unsigned int instruction_id = 0;
+	unsigned int instruction_id = 0,
+                 delay = 0;
 	
-	filenameconf = bstrcpy(sheet->path);
-	assert(filenameconf != NULl);
 	
-	bcatcstr(filenameconf, SUFFIX);
-	
-	f = fopen(filenameconf->data, "r");
+	f = fopen((const char*)filename, "r");
 	if (f == NULL) result = false;
 	
-	if(!result) printf("No se ha encontrado el archivo\n");
+	if(!result)printf("No se ha encontrado el archivo\n");
 	
-	l = lexer_new(f);
-	assert(l != NULL);
+    if (result){
+    
+        l = lexer_new(f);
+        assert(l != NULL);
+    
+        while (!lexer_is_off(l) && result){
+            result = get_id_and_delay(l, &instruction_id, &delay);
+            if (result) printf("ID:%i DELAY%i\n", instruction_id, delay);
+        }
+    }
 	
-	/***********CODIGO AGREGADO SOLO PARA HACER COMPILAR**************/
-	return true;
+    
+    
+	return result;
 	
 	
 	
@@ -175,7 +215,7 @@ static bool get_id_and_delay(Lexer *l, unsigned int* id, unsigned int* delay){
 	if (result){
 		item = lexer_item(l);
 		if (blength(item) == 0) result = false;
-		else *id = atoi(item->data);
+		else *id = atoi((const char*)item->data);
 		bdestroy(item);
 	}
 	
@@ -198,9 +238,14 @@ static bool get_id_and_delay(Lexer *l, unsigned int* id, unsigned int* delay){
 	if (result){
 		item = lexer_item(l);
 		if (blength(item) == 0) result = false;
-		else *delay = atoi(item->data);
+		else *delay = atoi((const char*)item->data);
 		bdestroy(item);
 	}
+    
+    if (result){
+        lexer_next_to(l, LOWER);
+        result = !lexer_is_off(l);
+    }
 	
 	
 
@@ -225,19 +270,19 @@ static bool get_id_and_delay(Lexer *l, unsigned int* id, unsigned int* delay){
  
  
  
- static iarray iarray_create(){
+static iarray iarray_create(void){
 	iarray result = NULL;
 	
-	iarray = (iarray)calloc(1, sizeof(struct array_t));
-	assert(iarray != NULL);
+	result = (iarray)calloc(1, sizeof(struct array_t));
+	assert(result != NULL);
 	
-	iarray->items = (int*) calloc(INITIAL_LEN, sizeof(int));
-	assert(iarray->items != NULL);
+	result->items = (int*) calloc(INITIAL_LEN, sizeof(int));
+	assert(result->items != NULL);
 	
-	iarray->len = 0;
-	iarray->max_len = INITIAL_LEN;
+	result->len = 0;
+	result->max_len = INITIAL_LEN;
 	
-	return iarray;
+	return result;
  
  }
  
@@ -245,27 +290,45 @@ static bool get_id_and_delay(Lexer *l, unsigned int* id, unsigned int* delay){
  
 	assert(array != NULL);
 	
-	if (array->item == array->maxlen){
+	if (array->len == array->max_len){
 		array->max_len = array->max_len + INCREMENT;
-		array->item = (int*) realloc(max_len, sizeof(int));
+		array->items = (int*) realloc(array->items, array->max_len * sizeof(int));
 	}
 	
-	array->item[array->len] = value;
+	array->items[array->len] = value;
 	array->len++;
 	
 }
- static bool iarray_checkvalue(iarray, int value){
+ static bool iarray_checkvalue(iarray array, int value){
 
 	bool result = true;
-	int i = 0;
+	unsigned int i = 0;
 	
 	result = false;
-	for (i = 0; i < iarray->len && !result; i++)
-		if (iarray[i] == value) result = true;
+	for (i = 0; i < array->len && !result; i++)
+		if (array->items[i] == value) result = true;
 	
 	return result;
 
 }
+
+static unsigned int iarray_len(iarray array){
+    
+    assert(array != NULL);
+    
+    return array->len;
+
+}
+
+static int iarray_nth_item(iarray array, unsigned int i){
+
+    assert(array != NULL);
+    assert(i < array->len);
+    
+    return array->items[i];
+
+}
+
  static iarray iarray_destroy(iarray array){
 	
 	assert(array != NULL);
