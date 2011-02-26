@@ -100,7 +100,6 @@ unsigned int instruction_sheet_instruction_count(instruction_sheet inst_sheet){
 	assert(inst_sheet != NULL);
 	
 	count = g_list_length(inst_sheet->instruction_list);
-	printf("-- COUNT: %i\n", count);
     
 	return count;
 }
@@ -132,15 +131,32 @@ unsigned int instruction_sheet_get_times(instruction_sheet inst_sheet){
 
 }
 
-char *instruction_get_pulse_sheet_path(instruction_sheet inst_sheet){
+char *instruction_sheet_get_pulse_sheet_path(instruction_sheet inst_sheet){
 
     assert(inst_sheet != NULL);
     return inst_sheet->pulse_sheet_path;
 }
 
-void instruction_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path){
+void instruction_sheet_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path){
 	assert(inst_sheet != NULL);
 	assert(path != NULL);
 	
     inst_sheet->pulse_sheet_path = path;
+}
+
+void instruction_sheet_set_delay(instruction_sheet inst_sheet, unsigned int type, unsigned int id, unsigned int delay){
+    unsigned int i = 0;
+    unsigned int count = 0;
+    instruction inst = NULL;
+    
+    assert(inst_sheet != NULL);
+    
+    count = instruction_sheet_instruction_count(inst_sheet);
+    
+    for(i=0; i < count; i++){
+        inst = instruction_sheet_get_nth_instruction(inst_sheet, i);
+        if((instruction_get_type(inst) == type) && (instruction_get_id(inst) == id)){
+            instruction_set_duration(inst, delay);
+        }
+    }
 }

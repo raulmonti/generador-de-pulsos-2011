@@ -57,7 +57,7 @@ instruction_sheet parse (char *pulse_program){
     sheet = instruction_sheet_create();
     assert(sheet != NULL);
     
-    instruction_set_pulse_sheet_path(sheet, pulse_program);
+    
     
     parse_ok = false;
 
@@ -69,7 +69,6 @@ instruction_sheet parse (char *pulse_program){
     if (parse_ok){
         item = get_line(l);
         while(item != NULL && is_phase_line(item) && parse_ok){
-            printf("Linea leida: %s\n", item->data);
             parse_ok = parse_phase(item, sheet);
             bdestroy(item);
             item = get_line(l);
@@ -82,7 +81,6 @@ instruction_sheet parse (char *pulse_program){
     if (parse_ok){
         item = get_line(l);
         while(item != NULL && is_program_line(item) && parse_ok){
-            printf("Linea leida: %s\n", item->data);
             if (line_begin_with (item, PULSE)){
                 parse_ok = parse_pulse(item, sheet);
             }

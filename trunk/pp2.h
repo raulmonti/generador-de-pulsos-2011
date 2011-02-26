@@ -20,7 +20,10 @@
 #define RETL_INST_CODE 0x03
 #define FIN_INST_CODE 0x07
 
-#define INST_LENGTH 8 /*Numero de bytes de las instrucciones aceptadas por el pp2 */
+/*Numero de bytes de las instrucciones aceptadas por el pp2 */
+#define INST_LENGTH 8 
+/*Numero de bucles anidados (comenzando desde 0)aceptadas por el pp2 */
+#define MAX_LOOP_LEVEL 3
 
 #define NO_ERROR_CODE 0
 #define BUSY_ERROR_CODE 1

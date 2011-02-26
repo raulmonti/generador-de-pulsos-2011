@@ -89,13 +89,21 @@ unsigned int instruction_sheet_get_times(instruction_sheet inst_sheet);
     *Modifica: nada
     *Retorna: el campo path (ruta de la hoja de pulsos)
 *****/
-char *instruction_get_pulse_sheet_path(instruction_sheet inst_sheet);
+char *instruction_sheet_get_pulse_sheet_path(instruction_sheet inst_sheet);
 
 /****
     *Requiere: inst_sheet != NULL y path != NULL
     *Modifica: Setea el valor del campo path de la hoja de pulsos
     *Retorna: Nada
 *****/
-void instruction_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path);
+void instruction_sheet_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path);
+
+/****
+    *Requiere: inst_sheet != NULL
+    *Modifica: Setea el valor del campo duration a todas las instrucciones 
+    *          de tipo type e id igual a id
+    *Retorna: Nada
+*****/
+void instruction_sheet_set_delay(instruction_sheet inst_sheet, unsigned int type, unsigned int id, unsigned int delay);
 #endif
 

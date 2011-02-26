@@ -111,7 +111,7 @@ int main ( int argc, char *argv[]){
     set_delay_values(inst_sheet, "config_conf");
     
     /*****************CARGAR LA RAM FASE*******************/
-    
+    instruction_sheet_print(inst_sheet);
     
     /*****************CARGAR EL PROGRAMA*******************/
     times = instruction_sheet_get_times(inst_sheet);

@@ -28,7 +28,7 @@ static iarray iarray_destroy(iarray array);
 static unsigned int iarray_len(iarray array);
 static int iarray_nth_item(iarray array, unsigned int i);
 
-static bool get_id_and_delay(Lexer *l, unsigned int* id, unsigned int* delay);
+static bool get_id_and_delay(Lexer *l, unsigned int* type,unsigned int* id, unsigned int* delay);
  
 
  /*
@@ -169,13 +169,15 @@ void generate_configuration_sheet(instruction_sheet sheet, const char* filepath)
 	if(!result)printf("No se ha encontrado el archivo\n");
 	
     if (result){
+        unsigned int instruction_type = 0;
     
         l = lexer_new(f);
         assert(l != NULL);
     
         while (!lexer_is_off(l) && result){
-            result = get_id_and_delay(l, &instruction_id, &delay);
-            if (result) printf("ID:%i DELAY%i\n", instruction_id, delay);
+            result = get_id_and_delay(l, &instruction_type, &instruction_id, &delay);
+            if (result) printf("TYPE: %i ID:%i DELAY%i\n", instruction_type, instruction_id, delay);
+            instruction_sheet_set_delay(sheet, instruction_type, instruction_id, delay);        
         }
     }
 	
@@ -190,7 +192,7 @@ void generate_configuration_sheet(instruction_sheet sheet, const char* filepath)
  }
  
  
-static bool get_id_and_delay(Lexer *l, unsigned int* id, unsigned int* delay){
+static bool get_id_and_delay(Lexer *l, unsigned int* type,unsigned int* id, unsigned int* delay){
 	bool result = true;
 	
 	bstring item = NULL;
@@ -203,7 +205,9 @@ static bool get_id_and_delay(Lexer *l, unsigned int* id, unsigned int* delay){
 	
 	if (result){
 		item = lexer_item(l);
-		result = biseqcstr(item, "p") || biseqcstr(item, "d");
+		if (biseqcstr(item, "p")) *type = PULSE_INST_CODE;
+		else if (biseqcstr(item, "d")) *type = DELAY_INST_CODE;
+		else result = false;
 		bdestroy(item);
 	}
 	
