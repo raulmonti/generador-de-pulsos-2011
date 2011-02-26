@@ -10,11 +10,13 @@ f_glist f_glist_create (void);
 
 f_glist f_glist_destroy (f_glist fl);
 
-void f_glist_add (f_glist fl, float f); 
+void f_glist_add (f_glist fl, unsigned int f); 
 
-float f_glist_next (f_glist fl);
+unsigned int f_glist_next (f_glist fl);
 
 int f_glist_length (f_glist fl);
+
+unsigned int f_glist_nth(f_glist fl);
 
 void f_glist_print (f_glist fl, int times);
 

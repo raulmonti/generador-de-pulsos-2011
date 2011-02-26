@@ -8,7 +8,7 @@ typedef struct t_cell *cell;
 typedef GList *glist;
 
 struct t_cell{
-    float value;
+    unsigned int value;
 };
 
 
@@ -43,7 +43,7 @@ f_glist f_glist_destroy (f_glist fl){
 }
 
 
-void f_glist_add (f_glist fl, float f){
+void f_glist_add (f_glist fl, unsigned int f){
  
     cell c = NULL;
     
@@ -55,9 +55,9 @@ void f_glist_add (f_glist fl, float f){
         
    
 
-float f_glist_next (f_glist fl){
+unsigned int f_glist_next (f_glist fl){
     
-    float result = 0;
+    unsigned int result = 0;
     glist aux = NULL;
     
     assert(fl != NULL);
@@ -84,6 +84,14 @@ int f_glist_length (f_glist fl){
 
 }
 
+
+unsigned int f_glist_nth(f_glist fl, unsigned int n){
+
+	assert(fl != NULL);
+	assert(f_glist_length(fl) > n);
+	return g_list_nth_data(fl->list,n)->value;
+
+}
 
 void f_glist_print (f_glist fl, int times){
 

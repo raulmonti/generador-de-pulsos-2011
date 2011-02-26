@@ -144,3 +144,14 @@ iteración--;
 
 */
 
+unsigned int phase_count_values(phase p){
+	assert(p != NULL);
+	return f_glist_length(p->values);
+}
+
+
+unsigned int phase_nth_values(phase p, unsigned int n){
+	assert(p != NULL);
+	assert(phase_length(p) > n);
+	return f_glist_nth(p->values, n);
+}
