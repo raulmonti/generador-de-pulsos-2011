@@ -131,19 +131,44 @@ int main ( int argc, char *argv[]){
 }
 
 
-
-void load_phases_ram(instruction_sheet inst_sheet){
+#define RAM_SPACE_SIZE 16
+bool load_phases_ram(instruction_sheet inst_sheet){
         unsigned int count_phases = 0,
-                     n = 0;
+                     count_phases_value = 0,
+                     n = 0,
+                     m = 0,
+                     phase_value = 0,
+                     next_base_address = 0;             
+        phase p = NULL;
+        bool result = true;
         
         assert(inst_sheet != NULL);
         
         count_phases = instruction_sheet_phase_count(inst_sheet);
+        if (count_phases > RAM_SPACE_SIZE) result = false;
+        else{
+            next_base_address = 0;
+            for(n = 0; n < count_phases; n++){
+                p = instruction_sheet_get_nth_phase(inst_sheet, n);
+                assert(p != NULL);
+                
+                set_base_address(p, next_base_address);
+                
+                count_phases_value = phase_count_values(p);
+                for(m = 0; m < count_phases_value; m++){
+                    phase_value = phase_nth_value(p, n);
+                    
+                    next_base_address++;    
+                }
+                
 
-        for(n = 0; n < count_phases; n++){
-        
+
+
+                
+            
+            
+            }
         }
-
 
 
 }
