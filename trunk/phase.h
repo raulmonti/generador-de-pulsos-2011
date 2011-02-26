@@ -35,5 +35,8 @@ void set_base_address(phase p, unsigned int BaseAddress);
 
 unsigned int get_mem_address(phase p, unsigned int iteration);
 
+unsigned int phase_count_values(phase p);
+
+unsigned int phase_nth_value(phase p, unsigned int n);
 
 #endif

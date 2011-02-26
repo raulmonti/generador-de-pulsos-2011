@@ -88,7 +88,7 @@ unsigned int pp2_microprocessor_mode_enabled(void);
     *Retorna: codigo de error: 0 = ok
     * 		  				   1 = Error dispositivo ocupado
 *****/
-unsigned int pp2_launch_pulse_sequense(void);
+unsigned int pp2_launch_pulse_sequence(void);
 
 
 #endif

@@ -120,7 +120,7 @@ int main ( int argc, char *argv[]){
         if(result == 0){
             result = pp2_microprocessor_mode_enabled();
             if(result == 0){
-                result = pp2_launch_pulse_sequense();
+                result = pp2_launch_pulse_sequence();
             }
         }
         /*¿como sabemos cuando termina de correr el programa*/
@@ -129,4 +129,34 @@ int main ( int argc, char *argv[]){
     
     return result;        
 }
+
+
+
+void load_phases_ram(instruction_sheet inst_sheet){
+        unsigned int count_phases = 0,
+                     n = 0;
+        
+        assert(inst_sheet != NULL);
+        
+        count_phases = instruction_sheet_phase_count(inst_sheet);
+
+        for(n = 0; n < count_phases; n++){
+        
+        }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 

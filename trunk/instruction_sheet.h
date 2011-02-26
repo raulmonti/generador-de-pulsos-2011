@@ -59,6 +59,10 @@ instruction instruction_sheet_get_nth_instruction(instruction_sheet inst_sheet, 
     *Modifica: Nada
     *Retorna: La cantidad de intrucciones almacenadas en isnt_sheet
 *****/
+
+phase instruction_sheet_get_nth_phase(instruction_sheet inst_sheet, unsigned int n);
+
+
 unsigned int instruction_sheet_instruction_count(instruction_sheet inst_sheet);
 
 /****
@@ -96,7 +100,7 @@ char *instruction_sheet_get_pulse_sheet_path(instruction_sheet inst_sheet);
     *Modifica: Setea el valor del campo path de la hoja de pulsos
     *Retorna: Nada
 *****/
-void instruction_sheet_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path);
+void instruction_sheet_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path); /*BORRAR PRONTO*/
 
 /****
     *Requiere: inst_sheet != NULL

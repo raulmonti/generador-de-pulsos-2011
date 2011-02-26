@@ -94,6 +94,17 @@ instruction instruction_sheet_get_nth_instruction(instruction_sheet inst_sheet, 
 	return result;
 }
 
+phase instruction_sheet_get_nth_phase(instruction_sheet inst_sheet, unsigned int n){
+	phase result = NULL;
+	
+	assert(inst_sheet != NULL);
+	
+	result = g_list_nth_data(inst_sheet->phase_list, n);
+	
+	return result;
+}
+
+
 unsigned int instruction_sheet_instruction_count(instruction_sheet inst_sheet){
 	unsigned int count = 0;
 	

@@ -145,7 +145,7 @@ unsigned int pp2_microprocessor_mode_enabled(void){
 	return result;
 }
 
-unsigned int pp2_launch_pulse_sequense(void){
+unsigned int pp2_launch_pulse_sequence(void){
 	unsigned int result = NO_ERROR_CODE;
 	if(!lpt_is_busy(LPT1_ADDR)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, LAUNCH_PULSE_SEQ);
