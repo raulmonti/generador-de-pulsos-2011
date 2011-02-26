@@ -1,96 +1,94 @@
-void load_ram_phase(unsigned int mem_address, unsigned int phase_value){
-    char buffer = 0;
-/* unsigned int lpt_send_byte(unsigned int port_addr, unsigned int data); */
-    
-    
-    
-
-}
+#include "dds.h"
 
 /*
-#define LPT1_BASE    LPT1
-#define LPT1_DATA    LPT1_BASE + 0    
-#define LPT1_STATUS  LPT1_BASE + 1
-#define LPT1_CONTROL LPT1_BASE + 2
-
+void load_ram_phase(unsigned int mem_address, unsigned int phase_value){
+}
 */
 
 
-bool set_address(unsigned char address){
+/* Cambiar a CHAR el campo data de 'lpt_send_byte' */
+bool dds_set_address(unsigned char address){
     bool result = true;
     
-    result = lpt_send_byte(LPT_CONTROL, 0x04);
+    result = lpt_send_byte(LPT_CONTROL, 0x04) == 0;
+    /* Delay() */
     
-   formMain->DLPortIO1->Port[CONTROL]=0x04; //biow=1,bior=1,le_a=1,enab=1
+    if (result)
+        result = lpt_send_byte(LPT_DATA, address) == 0;
 
-   delayN(3);
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x07) == 0;
+        /* Delay() */
 
-   formMain->DLPortIO1->Port[DATO]=d;   /* direccion en el bus */
-
-   /*  generar el pulso LE_A  */
-
-   formMain->DLPortIO1->Port[CONTROL]=0x07; //biow=1,bior=1,le_a=0,enab=0
-
-   delayN(1);
-   formMain->DLPortIO1->Port[CONTROL]=0x05;  //biow=1,bior=1,le_a=1,enab=0
-
-   formMain->DLPortIO1->Port[CONTROL]=0x04;  //biow=1,bior=1,le_a=1,enab=1
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x05) == 0;
+   
+   if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x04) == 0;
+   
+   return result;
 
 }
 
 
 
-void escritura(unsigned char b)   /* escritura de un byte de datos */
+bool dds_write(unsigned char data){
 
-{
+    bool result = true;
 
-   formMain->DLPortIO1->Port[CONTROL]=0x04; //biow=1,bior=1,le_a=1,enab=1
+    result = lpt_send_byte(LPT_CONTROL, 0x04) == 0;
+    /* Delay() */
+    
+    if (result)
+        result = lpt_send_byte(LPT_DATA, data) == 0;
 
-   delayN(5);
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x0d) == 0;
+        /* Delay() */
 
-   formMain->DLPortIO1->Port[DATO]=b;
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x05) == 0;    
+    
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x04) == 0;
+        /* Delay() */    
 
-   /* pulso BIOWR */
-   formMain->DLPortIO1->Port[CONTROL]=0x0d; //biow=0,bior=1,le_a=1,enab=0
-   delayN(8);
-   formMain->DLPortIO1->Port[CONTROL]=0x05; //biow=1,bior=1,le_a=1,enab=0
-
-   formMain->DLPortIO1->Port[CONTROL]=0x04; //biow=1,bior=1,le_a=1,enab=1
-
-   delayN(3);
+    return result;
+   
 }
 
 
 
-void dds_word(unsigned int w)   /* transmite un word en serie  al dds */
+bool dds_send_word(unsigned int word){
+  unsigned char i = 0,
+                x = 0;
+  bool result = true;
 
-{
+  for(i = 0; i <= 15 && result; i++){
+        x = 1;
+        
+	if(word & 0x8000) 
+	    x = 3;
 
-  unsigned char i,x;
+	result = dds_write(x);
 
-  for(i=0; i<=15; i++){
+    if (result){
+	    x = x & 2;
+	    result = dds_write(x);
+    }
+	
+	x = x | 1;
+	
+	if (result)
+	    result = dds_write(x);
 
-        x=1;  /* asume bit = 0 */
-
-	if(w&0x8000) x=3;
-
-	escritura(x); /* salida con fsync = 0 */
-
-        /* pulso de reloj */
-
-	x=x&2;
-
-	escritura(x);
-
-	x=x|1;
-
-	escritura(x);
-
-	w=w<<1;  /* desplazar a la izquierda un bit */
+	word = word << 1;  /* desplazar a la izquierda un bit */
 
   }
 
-  escritura(7);
+  if (result) result = dds_write(7);
+
+  return result;
 
 }
 

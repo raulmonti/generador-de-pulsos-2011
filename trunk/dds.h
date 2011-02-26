@@ -1,3 +1,7 @@
+#ifndef _DDS_H
+#define _DDS_H
+
+#include <stdbool.h>
 #include "lpt_linux.h"
 
 #define RAM_REG_COM1   0x70
@@ -11,5 +15,11 @@
 #define DDS_REG_COD    0x77
 
 
+bool dds_set_address(unsigned char address);
+bool dds_write(unsigned char data);
+bool dds_send_word(unsigned int word);
 
+void load_ram_phase(unsigned int mem_address, unsigned int phase_value);
+
+#endif
 

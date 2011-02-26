@@ -6,10 +6,10 @@
 #define LPT1 0x378
 #define LPT2 0x278
 
-#define LPT1_BASE    LPT1
-#define LPT1_DATA    LPT1_BASE + 0    
-#define LPT1_STATUS  LPT1_BASE + 1
-#define LPT1_CONTROL LPT1_BASE + 2
+#define LPT_BASE    LPT1
+#define LPT_DATA    LPT_BASE + 0    
+#define LPT_STATUS  LPT_BASE + 1
+#define LPT_CONTROL LPT_BASE + 2
 
 
 /****Envia los datos alpacendos en data por el puerto ubicado en la direccion port_addr

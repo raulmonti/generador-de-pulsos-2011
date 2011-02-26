@@ -90,7 +90,7 @@ unsigned int pp2_write_instruction( unsigned int pattern, unsigned int data,
     unsigned char instruction[INST_LENGTH] = {0,0,0,0,0,0,0,0}; 
    
 
-    if(!lpt_is_busy(LPT1_ADDR)){
+    if(!lpt_is_busy(LPT_BASE)){
         result = build_instruction(instruction, pattern, data, loop_level, 
                                    delay, inst_code);
         if(result == NO_ERROR_CODE){                               
@@ -106,7 +106,7 @@ unsigned int pp2_write_instruction( unsigned int pattern, unsigned int data,
 
 unsigned int pp2_full_reset(void){
 	unsigned int result = NO_ERROR_CODE;
-	if(!lpt_is_busy(LPT1_ADDR)){
+	if(!lpt_is_busy(LPT_BASE)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, FULL_RESET);
 	}else{
 		result = BUSY_ERROR_CODE;
@@ -116,7 +116,7 @@ unsigned int pp2_full_reset(void){
 
 unsigned int pp2_charge_mode_enabled(void){
 	unsigned int result = NO_ERROR_CODE;
-	if(!lpt_is_busy(LPT1_ADDR)){
+	if(!lpt_is_busy(LPT_BASE)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, CHARGE_MODE);
 	}else{
 		result = BUSY_ERROR_CODE;
@@ -126,7 +126,7 @@ unsigned int pp2_charge_mode_enabled(void){
 
 unsigned int pp2_transfer_instruction(void){
 	unsigned int result = 0;
-	if(!lpt_is_busy(LPT1_ADDR)){
+	if(!lpt_is_busy(LPT_BASE)){
 		result = lpt_send_byte(TRANSFER_REG_ADDR, 0x00);
 	}else{
 		result = BUSY_ERROR_CODE;
@@ -137,7 +137,7 @@ unsigned int pp2_transfer_instruction(void){
 
 unsigned int pp2_microprocessor_mode_enabled(void){
 	unsigned int result = 0;
-	if(!lpt_is_busy(LPT1_ADDR)){
+	if(!lpt_is_busy(LPT_BASE)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, MICRO_MODE);
 	}else{
 		result = BUSY_ERROR_CODE;
@@ -147,7 +147,7 @@ unsigned int pp2_microprocessor_mode_enabled(void){
 
 unsigned int pp2_launch_pulse_sequence(void){
 	unsigned int result = NO_ERROR_CODE;
-	if(!lpt_is_busy(LPT1_ADDR)){
+	if(!lpt_is_busy(LPT_BASE)){
 		result = lpt_send_byte(COMMAND_REG_ADDR, LAUNCH_PULSE_SEQ);
 	}else{
 		result = BUSY_ERROR_CODE;
