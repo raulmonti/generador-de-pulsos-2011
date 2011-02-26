@@ -7,3 +7,5 @@ program:
     p1(ph7)
     d1
     p2(ph7)
+    d1
+    p1(ph9)
