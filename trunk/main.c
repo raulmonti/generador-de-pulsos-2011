@@ -101,19 +101,22 @@ int main ( int argc, char *argv[]){
         return 0;
     }
     
-    /****************PARSEAR HOJA DE PULSOS****************/
+    /****************PARSEAR HOJA DE PULSOS****************//*LISTOOOOOO*/
     inst_sheet = parse(argv[1]);
     if(inst_sheet == NULL){
         printf("Error:(mostrar mensaje de error devuelto) codigo: %i\n",result);
         return 0;
     }
     
-    /*****************CARGAR DELAYS y DEMAS DATOS**********/
+    /*****************CARGAR DELAYS y DEMAS DATOS**********//*LISTOOOOOO*/
 /*    generate_configuration_sheet(inst_sheet, "config");*/
 
     set_delay_values(inst_sheet, "config_conf");
     
     /*****************CARGAR LA RAM FASE*******************/
+
+    load_phases_ram(inst_sheet);
+
     instruction_sheet_print(inst_sheet);
     
     /*****************CARGAR EL PROGRAMA*******************/
@@ -131,7 +134,7 @@ int main ( int argc, char *argv[]){
     }*/
     /*¿como sabemos cuando termina de correr el programa*/
     
-    load_phases_ram(inst_sheet);
+
     
     return result;        
 }
