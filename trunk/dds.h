@@ -19,7 +19,9 @@ bool dds_set_address(unsigned char address);
 bool dds_write(unsigned char data);
 bool dds_send_word(unsigned int word);
 
-void load_ram_phase(unsigned int mem_address, unsigned int phase_value);
+unsigned int load_ram_phase(unsigned char mem_address, unsigned int phase_value);
+unsigned int activate_ram_write (void);
+unsigned int desactivate_ram_write (void);
 
 #endif
 

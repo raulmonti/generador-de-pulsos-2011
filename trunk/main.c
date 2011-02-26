@@ -5,11 +5,14 @@
 #include "instruction.h"
 #include "interface.h"
 #include "pp2.h"
+#include "dds.h"
 #include "parser.h"
 
 unsigned int get_instruction_code(instruction inst);
 void get_pattern(instruction inst, unsigned int *pattern);
 unsigned int load_program (instruction_sheet is, unsigned int current_it);
+bool load_phases_ram(instruction_sheet inst_sheet);
+
 
 unsigned int get_instruction_code(instruction inst){
     unsigned int result = 0;
@@ -114,7 +117,7 @@ int main ( int argc, char *argv[]){
     instruction_sheet_print(inst_sheet);
     
     /*****************CARGAR EL PROGRAMA*******************/
-    times = instruction_sheet_get_times(inst_sheet);
+    /*times = instruction_sheet_get_times(inst_sheet);
     while(current_it < times && result == 0){
         result = load_program (inst_sheet, current_it);
         if(result == 0){
@@ -123,9 +126,12 @@ int main ( int argc, char *argv[]){
                 result = pp2_launch_pulse_sequence();
             }
         }
-        /*¿como sabemos cuando termina de correr el programa*/
+        
         current_it++;        
-    }
+    }*/
+    /*¿como sabemos cuando termina de correr el programa*/
+    
+    load_phases_ram(inst_sheet);
     
     return result;        
 }
@@ -153,24 +159,20 @@ bool load_phases_ram(instruction_sheet inst_sheet){
                 assert(p != NULL);
                 
                 set_base_address(p, next_base_address);
-                
+                printf("Dirección Base: %i\n", next_base_address);
                 count_phases_value = phase_count_values(p);
                 for(m = 0; m < count_phases_value; m++){
-                    phase_value = phase_nth_value(p, n);
+                    phase_value = phase_nth_value(p, m);
                     
+                    printf("\tValores: %i\n", phase_value);                    
+                                        
+                    load_ram_phase(next_base_address, phase_value);                           
+                                        
                     next_base_address++;    
                 }
-                
-
-
-
-                
-            
-            
             }
         }
-
-
+    return result;
 }
 
 

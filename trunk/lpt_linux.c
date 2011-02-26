@@ -16,7 +16,7 @@
 #define ENABLE_PORT 1
 #define DISABLE_PORT 0
 
-unsigned int lpt_send_byte(unsigned int port_addr, unsigned int data){
+unsigned int lpt_send_byte(unsigned int port_addr, unsigned char data){
 	unsigned int result = 0;
 	/*Habilito permiso de acceso al puerto de direccion port_addr*/
 	if (ioperm(port_addr, 1, ENABLE_PORT)) {

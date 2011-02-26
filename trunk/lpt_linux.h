@@ -20,7 +20,7 @@
     * 		  				   					1 = Puerto ocupado
 *****/
 
-unsigned int lpt_send_byte(unsigned int port_addr, unsigned int data);
+unsigned int lpt_send_byte(unsigned int port_addr, unsigned char data);
 
 /****Toma los datos del buffer de recepcion
     *Requiere: Nada

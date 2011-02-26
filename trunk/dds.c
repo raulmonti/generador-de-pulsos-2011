@@ -1,9 +1,50 @@
 #include "dds.h"
+#include <stdio.h>
 
-/*
-void load_ram_phase(unsigned int mem_address, unsigned int phase_value){
+    
+
+unsigned int activate_ram_write (void){
+
+    dds_set_address(DDS_REG_COM1);
+    dds_write(0x02);
+
+    return 0;
 }
-*/
+
+
+unsigned int desactivate_ram_write (void){
+
+    dds_set_address(DDS_REG_COM1);
+    dds_write(0x00);
+
+    return 0;
+}
+
+
+
+unsigned int load_ram_phase(unsigned char mem_address, unsigned int phase_value){
+
+    char add = 1, value = 0;
+    
+    value = phase_value;
+    printf("load_ram_phase value1:%X\n",value);   
+    
+    dds_set_address(RAM_REG_COM1);
+    dds_write(mem_address+add);
+    dds_set_address(RAM_REG_WRITE);
+    dds_write(value);
+    dds_set_address(RAM_REG_COM1);
+    dds_write(mem_address);
+    dds_set_address(RAM_REG_WRITE);
+    value = phase_value>>8;
+    dds_write(value);
+
+    printf("load_ram_phase value2:%X\n",value);
+    
+    return 0;
+    
+}
+
 
 
 /* Cambiar a CHAR el campo data de 'lpt_send_byte' */

@@ -150,8 +150,8 @@ unsigned int phase_count_values(phase p){
 }
 
 
-unsigned int phase_nth_values(phase p, unsigned int n){
+unsigned int phase_nth_value(phase p, unsigned int n){
 	assert(p != NULL);
-	assert(phase_length(p) > n);
+	assert(phase_count_values(p) > n);
 	return f_glist_nth(p->values, n);
 }

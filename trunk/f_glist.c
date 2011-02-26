@@ -88,8 +88,8 @@ int f_glist_length (f_glist fl){
 unsigned int f_glist_nth(f_glist fl, unsigned int n){
 
 	assert(fl != NULL);
-	assert(f_glist_length(fl) > n);
-	return g_list_nth_data(fl->list,n)->value;
+	assert(f_glist_length(fl) > (int)n);
+	return ((cell)g_list_nth_data(fl->list,n))->value;
 
 }
 
@@ -103,7 +103,7 @@ void f_glist_print (f_glist fl, int times){
     for(i = 0; i < times; i++){
         printf("[ ");
         for( j = 0; j < len; j++){
-            printf("%f ", f_glist_next(fl));
+            printf("%u ", f_glist_next(fl));
         }
         printf("]\n");
     }

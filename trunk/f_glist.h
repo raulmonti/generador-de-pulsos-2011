@@ -16,7 +16,7 @@ unsigned int f_glist_next (f_glist fl);
 
 int f_glist_length (f_glist fl);
 
-unsigned int f_glist_nth(f_glist fl);
+unsigned int f_glist_nth(f_glist fl, unsigned int n);
 
 void f_glist_print (f_glist fl, int times);
 
