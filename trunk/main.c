@@ -109,11 +109,11 @@ int main ( int argc, char *argv[]){
     }
     
     /*****************CARGAR DELAYS y DEMAS DATOS**********//*LISTOOOOOO*/
-    generate_configuration_sheet(inst_sheet, "prueba_config");
-    set_delay_values_from_stdin(inst_sheet);
-    instruction_sheet_print(inst_sheet);
-    /*set_delay_values(inst_sheet, "config_conf");*/
+    /*generate_configuration_sheet(inst_sheet, "config");
+    set_delay_values_from_stdin(inst_sheet);*/
     
+    set_delay_values_from_file(inst_sheet, "config_conf");
+    instruction_sheet_print(inst_sheet);
     /*****************CARGAR LA RAM FASE*******************/
 
     load_phases_ram(inst_sheet);
