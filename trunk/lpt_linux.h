@@ -3,8 +3,14 @@
 
 #include <stdbool.h>
 
-#define LPT1_ADDR 0x378
-#define LPT2_ADDR 0x278
+#define LPT1 0x378
+#define LPT2 0x278
+
+#define LPT1_BASE    LPT1
+#define LPT1_DATA    LPT1_BASE + 0    
+#define LPT1_STATUS  LPT1_BASE + 1
+#define LPT1_CONTROL LPT1_BASE + 2
+
 
 /****Envia los datos alpacendos en data por el puerto ubicado en la direccion port_addr
     *Requiere: Nada
