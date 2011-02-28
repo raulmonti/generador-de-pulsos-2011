@@ -63,6 +63,10 @@ instruction instruction_sheet_get_nth_instruction(instruction_sheet inst_sheet, 
 phase instruction_sheet_get_nth_phase(instruction_sheet inst_sheet, unsigned int n);
 
 
+/* Devuelve la fase con id 'id', o Null si no existe*/
+phase instruction_sheet_get_phase(instruction_sheet inst_sheet, unsigned int id);
+
+
 unsigned int instruction_sheet_instruction_count(instruction_sheet inst_sheet);
 
 /****
@@ -88,19 +92,6 @@ void instruction_sheet_set_times(instruction_sheet inst_sheet, unsigned int time
 *****/
 unsigned int instruction_sheet_get_times(instruction_sheet inst_sheet);
 
-/****
-    *Requiere: inst_sheet != NULL
-    *Modifica: nada
-    *Retorna: el campo path (ruta de la hoja de pulsos)
-*****/
-char *instruction_sheet_get_pulse_sheet_path(instruction_sheet inst_sheet);
-
-/****
-    *Requiere: inst_sheet != NULL y path != NULL
-    *Modifica: Setea el valor del campo path de la hoja de pulsos
-    *Retorna: Nada
-*****/
-void instruction_sheet_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path); /*BORRAR PRONTO*/
 
 /****
     *Requiere: inst_sheet != NULL
@@ -108,6 +99,19 @@ void instruction_sheet_set_pulse_sheet_path(instruction_sheet inst_sheet, char* 
     *          de tipo type e id igual a id
     *Retorna: Nada
 *****/
-void instruction_sheet_set_delay(instruction_sheet inst_sheet, unsigned int type, unsigned int id, unsigned int delay);
+void instruction_sheet_set_delay(instruction_sheet inst_sheet, 
+        unsigned int type, unsigned int id, unsigned int delay);
+
+
+
+
+unsigned int instruction_sheet_remove_instructions
+		(instruction_sheet is,unsigned int from, unsigned int to);
+
+
+unsigned int instruction_sheet_insert_instructions
+		(instruction_sheet is, GList* instructions, unsigned int from);
+
+
 #endif
 

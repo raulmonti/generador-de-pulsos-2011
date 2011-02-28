@@ -11,7 +11,7 @@
 #include <assert.h>
 
 #define DEBUG_ON
-#define RAM_RANGE 16 /* Espacio de ram: 0 .. RAM_RANGE - 1 */	
+#define RAM_RANGE 16 /* Espacio de ram: 0   phase_value = phase_nth_value(p, m); .. RAM_RANGE - 1 */	
 	
 
 
@@ -102,19 +102,19 @@ void set_base_address(phase p, unsigned int baseAddress){
 
 }
 
-unsigned int get_mem_address(phase p, unsigned int iteration){
+unsigned int phase_get_mem_address(phase p, unsigned int shift){
 	unsigned int result = 0,
 	             index = 0,
 				 len = 0;
 	
 	/* PRE: */
 	assert(p != NULL);
-	/* Desde 0 <= iteration < N° of Samples */
+	/* Desde 0 <= shift < N° of Samples */
 	
 	len = f_glist_length(p->values);
 	assert(len != 0);
 	
-	index = iteration % len;
+	index = shift % len;
 	result = p->baseAddr + index;
 	
 	return result;
@@ -149,9 +149,9 @@ unsigned int phase_count_values(phase p){
 	return f_glist_length(p->values);
 }
 
-
+/*REVISAR!!!!!!!!!!!!!!!*/
 unsigned int phase_nth_value(phase p, unsigned int n){
 	assert(p != NULL);
-	assert(phase_count_values(p) > n);
+	n = n % phase_count_values(p);
 	return f_glist_nth(p->values, n);
 }

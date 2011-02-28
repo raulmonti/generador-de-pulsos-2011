@@ -9,7 +9,6 @@ struct inst_sheet_s {
     GList* instruction_list;
     GList* phase_list;
     unsigned int times; /*Numero de veces que se realiza el experimento*/
-    char *pulse_sheet_path;
 };
 
 instruction_sheet instruction_sheet_create(void){
@@ -142,18 +141,6 @@ unsigned int instruction_sheet_get_times(instruction_sheet inst_sheet){
 
 }
 
-char *instruction_sheet_get_pulse_sheet_path(instruction_sheet inst_sheet){
-
-    assert(inst_sheet != NULL);
-    return inst_sheet->pulse_sheet_path;
-}
-
-void instruction_sheet_set_pulse_sheet_path(instruction_sheet inst_sheet, char* path){
-	assert(inst_sheet != NULL);
-	assert(path != NULL);
-	
-    inst_sheet->pulse_sheet_path = path;
-}
 
 void instruction_sheet_set_delay(instruction_sheet inst_sheet, unsigned int type, unsigned int id, unsigned int delay){
     unsigned int i = 0;
@@ -171,3 +158,65 @@ void instruction_sheet_set_delay(instruction_sheet inst_sheet, unsigned int type
         }
     }
 }
+
+
+
+
+unsigned int instruction_sheet_remove_instructions
+		(instruction_sheet is,unsigned int from, unsigned int to){
+	
+	GList *inst_list = NULL;
+	unsigned int i = 0;
+	unsigned int result = 0;
+		
+	assert(is != NULL);
+	assert(from < to && to < instruction_sheet_instruction_count(is));	
+	
+	for(i = from; i <= to; i++){
+			inst_list = g_list_nth(is->instruction_list, from);
+			is->instruction_list = g_list_remove_link(is->instruction_list, inst_list);
+			printf("BORRADO>>>\n");
+			instruction_print(inst_list->data);
+			inst_list->data = instruction_destroy(inst_list->data);
+			g_list_free(inst_list);
+	} 
+	
+	return result;	
+}
+
+unsigned int instruction_sheet_insert_instructions
+		(instruction_sheet is, GList* instructions, unsigned int from){
+	
+	unsigned int i = 0, length = 0;
+	length = g_list_length(instructions);
+	instruction pointer = NULL;
+	
+	for(i = 0; i < length; i++){
+	    pointer = g_list_nth_data(instructions, i);
+	    is->instruction_list = g_list_insert(is->instruction_list, pointer, from+i);	
+	}
+	
+	return 0;
+}
+
+
+
+phase instruction_sheet_get_phase(instruction_sheet inst_sheet, unsigned int id){
+
+    int i = 0, cota = 0;
+    phase result = NULL, p = NULL;
+    
+    assert(inst_sheet != NULL);
+    cota = g_list_length(inst_sheet->phase_list);
+    
+    
+    for(i = 0; i < cota; i++){
+        p = g_list_nth_data(inst_sheet->phase_list);
+        if(phase_id(p) = id) 
+            result = p;
+    }
+    
+    return result;
+}
+
+

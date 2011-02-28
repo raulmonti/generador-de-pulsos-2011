@@ -15,10 +15,10 @@
 #define MICRO_MODE 0x00
 
 /*Codigos de instruccion*/
-#define CONTINUE_INST_CODE 0x01
-#define LAZO_INST_CODE 0x02
-#define RETL_INST_CODE 0x03
-#define FIN_INST_CODE 0x07
+#define CONTINUE_PP2_CODE 0x01
+#define LAZO_PP2_CODE 0x02
+#define RETL_PP2_CODE 0x03
+#define FIN_PP2_CODE 0x07
 
 /*Numero de bytes de las instrucciones aceptadas por el pp2 */
 #define INST_LENGTH 8 

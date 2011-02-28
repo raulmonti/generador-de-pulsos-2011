@@ -72,5 +72,11 @@ unsigned int instruction_get_type(instruction inst);
 *****/
 unsigned int instruction_get_id(instruction inst);
 
+
+void instruction_phase_add_shift(instruction inst, int shift);
+
+
+int instruction_phase_get_shift(instruction inst);
+
 #endif
 

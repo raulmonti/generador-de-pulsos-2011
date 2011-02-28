@@ -9,6 +9,7 @@ struct instruction_s{
     unsigned int type;
     unsigned int data;
     unsigned int duration;
+    unsigned int phase_shift;
 };
 
 instruction instruction_create(unsigned int id, int t, unsigned int p){
@@ -91,3 +92,18 @@ unsigned int instruction_get_id(instruction inst){
 	assert(inst != NULL);
 	return inst->id;
 }
+
+
+/*Indica que hay que agregar un corrimiento de valor 'shift'
+sobre la lista de fases para esta instruccion*/
+void instruction_phase_add_shift(instruction inst, int shift){
+
+    assert(inst != NULL);
+    inst->phase_shift += shift;
+}
+
+int instruction_phase_get_shift(instruction inst){
+    assert(inst != NULL);
+    return inst->phase_shift;
+}
+
