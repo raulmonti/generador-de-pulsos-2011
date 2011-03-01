@@ -8,10 +8,11 @@
 #include "dds.h"
 #include "parser.h"
 #include <math.h>
+#include "ad.h"
 
 unsigned int get_instruction_code(instruction inst);
 void get_pattern(instruction inst, unsigned int *pattern);
-unsigned int load_program (instruction_sheet is, unsigned int current_it);
+unsigned int load_program (instruction_sheet is);
 bool load_phases_ram(instruction_sheet inst_sheet, unsigned int shift);
 
 
@@ -39,12 +40,9 @@ unsigned int get_instruction_code(instruction inst){
     return  result;
 }
 
-void get_pattern(instruction inst, unsigned int *pattern){
-    assert(inst != NULL);
-    
-}
 
-unsigned int load_program (instruction_sheet is, unsigned int current_it){
+
+unsigned int load_program (instruction_sheet is){
     
     unsigned int ins_count = 0, i = 0;
     instruction inst = NULL;
@@ -168,10 +166,13 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
         }else if(instruction_get_type(inst) == ACQUIRE_INST_CODE){
         
             /*TODAVIA NO SE QUE HACER CON ESTO*/
-         
+            pattern = 16; /* activo el bit 5 para que lance el AD */
             
+            inst_code = CONTINUE_PP2_CODE;
             
-        
+            delay = 2;
+            
+                   
         }else if(instruction_get_type(inst) == END_INST_CODE){
         
             inst_code = FIN_PP2_CODE;
@@ -196,8 +197,9 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
 int main ( int argc, char *argv[]){
 
     instruction_sheet inst_sheet = NULL;
-    int current_it = 0, times = 0; 
+    int times = 0; 
     unsigned int result = 0, i = 0;   
+    short **canala = NULL, **canalb = NULL;
 
     if(argc != 3){
         printf("Error. Uso: ./rmnPulseGenerator \
@@ -225,26 +227,23 @@ int main ( int argc, char *argv[]){
     instruction_sheet_print(inst_sheet);
     
     /*****************CARGAR EL PROGRAMA*******************/
-    times = instruction_sheet_get_times(inst_sheet);
-    while(current_it < times && result == 0){
-        result = load_program (inst_sheet, current_it);
+
+    result = load_program (inst_sheet);
+    if(result == 0){
+        result = pp2_microprocessor_mode_enabled();
         if(result == 0){
-            result = pp2_microprocessor_mode_enabled();
-            if(result == 0){
-                result = pp2_launch_pulse_sequence();
-            }
+            result = pp2_launch_pulse_sequence();
         }
-        
-        current_it++;        
     }
+    
+    result = ad_adquirir(canala, canalb, AD_MODO_MODULADO, 32, 1000000);
     
     /* Corro las repeticiones del experimento corriendo 
        la fase si asi se pidio*/
-    
     times = instruction_sheet_get_times(inst_sheet);
     
     for(i = 1; i < abs(times); i++){
-        if(times < 0) 
+        if(times < 0)       /*times negativo indica cambio de fase en c/prueba*/
             load_phases_ram(inst_sheet, i);
         result = pp2_launch_pulse_sequence();
     }

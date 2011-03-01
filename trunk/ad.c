@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define AD_MODO_MODULADO 0
-#define AD_MODO_CONTINUO 1
 
 /*PROTOTIPOS*/
 
