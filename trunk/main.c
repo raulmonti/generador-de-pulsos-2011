@@ -255,7 +255,7 @@ bool load_phases_ram(instruction_sheet inst_sheet, unsigned int shift){
                 for(m = 0; m < count_phases_value; m++){
                     phase_value = phase_nth_value(p, m + shift);
                     
-                    printf("\tValores: %i\n", phase_value);                    
+                    printf("\tValores: %X\n", phase_value);                    
                                         
                     load_ram_phase(next_base_address, phase_value);                           
                                         

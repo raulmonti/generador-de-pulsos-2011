@@ -24,10 +24,10 @@ unsigned int desactivate_ram_write (void){
 
 unsigned int load_ram_phase(unsigned char mem_address, unsigned int phase_value){
 
-    char add = 1, value = 0;
+    unsigned char add = 1, value = 0;
     
     value = phase_value;
-    printf("load_ram_phase value1:%X\n",value);   
+    printf("llllllll: %X\n", value);
     
     dds_set_address(RAM_REG_COM1);
     dds_write(mem_address+add);

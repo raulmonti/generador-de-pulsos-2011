@@ -153,5 +153,6 @@ unsigned int phase_count_values(phase p){
 unsigned int phase_nth_value(phase p, unsigned int n){
 	assert(p != NULL);
 	n = n % phase_count_values(p);
+	printf("%u \n%X\n",n,f_glist_nth(p->values, n));
 	return f_glist_nth(p->values, n);
 }
