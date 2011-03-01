@@ -6,6 +6,7 @@
 #include "bstring/bstrlib.h"
 #include "instruction_sheet.h"
 #include "parser.h"
+#include "phase.h"
 
 #include "lexer.h"
 

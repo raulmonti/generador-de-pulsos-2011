@@ -10,36 +10,9 @@
 #include <math.h>
 #include "ad.h"
 
-unsigned int get_instruction_code(instruction inst);
-void get_pattern(instruction inst, unsigned int *pattern);
+
 unsigned int load_program (instruction_sheet is);
 bool load_phases_ram(instruction_sheet inst_sheet, unsigned int shift);
-
-
-unsigned int get_instruction_code(instruction inst){
-    unsigned int result = 0;
-    
-    assert(inst != NULL);
-    
-    switch(instruction_get_type(inst)){
-		case LOOP_INST_CODE:{ result = LAZO_PP2_CODE;
-				break;}
-		case ACQUIRE_INST_CODE:{result = 0x00;
-								/*En este caso no interesa la instruccion ya /
-								 * que se debe disparar el conversor AD*/
-				break;}
-		case PULSE_INST_CODE:{result = CONTINUE_PP2_CODE;
-				break;}
-		case DELAY_INST_CODE:{result = CONTINUE_PP2_CODE;
-				break;}
-		case ENDLOOP_INST_CODE:{result = RETL_PP2_CODE;
-				break;}
-		case END_INST_CODE:{result = FIN_PP2_CODE;
-				break;}
-	}
-    return  result;
-}
-
 
 
 unsigned int load_program (instruction_sheet is){
@@ -199,7 +172,7 @@ int main ( int argc, char *argv[]){
     instruction_sheet inst_sheet = NULL;
     int times = 0; 
     unsigned int result = 0, i = 0;   
-    short **canala = NULL, **canalb = NULL;
+    short *canala = NULL, *canalb = NULL;
 
     if(argc != 3){
         printf("Error. Uso: ./rmnPulseGenerator \
@@ -236,7 +209,7 @@ int main ( int argc, char *argv[]){
         }
     }
     
-    result = ad_adquirir(canala, canalb, AD_MODO_MODULADO, 32, 1000000);
+    result = ad_adquirir(&canala, &canalb, AD_MODO_MODULADO, 32, 1000000);
     
     /* Corro las repeticiones del experimento corriendo 
        la fase si asi se pidio*/
@@ -246,6 +219,7 @@ int main ( int argc, char *argv[]){
         if(times < 0)       /*times negativo indica cambio de fase en c/prueba*/
             load_phases_ram(inst_sheet, i);
         result = pp2_launch_pulse_sequence();
+        result = ad_adquirir(&canala, &canalb, AD_MODO_MODULADO, 32, 1000000);
     }
     
     

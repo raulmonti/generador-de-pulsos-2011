@@ -28,7 +28,7 @@ bool ad_config (unsigned int adqm, unsigned int kpc, unsigned int mps){
     unsigned char conf = 0;
     unsigned char N = 0;
     
-    assert(kpc<=7);
+    assert(kpc==1 || kpc==2 || kpc==4 || kpc==8 || kpc==16 || kpc==32 || kpc==64);
     
     /*Lo coloco en modo ad*/
     conf = 0x01;
@@ -160,18 +160,18 @@ bool ad_leer_buffers(short **canala, short **canalb, unsigned int kpc){
     /* Construyo el resultado final A ab B -> Aa bB*/
 
     for(i = 0; i<(kpc*1024);i++){
-        *canala[i] = canal_a[i];
-        *canala[i] = *canala[i]<<4;
+        (*canala)[i] = canal_a[i];
+        (*canala)[i] = (*canala)[i]<<4;
         aux = canal_ab[i]>>4;
-        *canala[i] = *canala[i] | aux;
+        (*canala)[i] = (*canala)[i] | aux;
     }
 
     for(i = 0; i<(kpc*1024);i++){
-        *canalb[i] = canal_b[i];
-        *canalb[i] = *canalb[i]<<4;
+        (*canalb)[i] = canal_b[i];
+        (*canalb)[i] = (*canalb)[i]<<4;
         aux = canal_ab[i]&0x0f;
-        printf("AUX------- %X\n",aux);
-        *canalb[i] = *canalb[i] | aux;
+        /*printf("AUX------- %X\n",aux);*/
+        (*canalb)[i] = (*canalb)[i] | aux;
     }
 
     free(canal_a);
