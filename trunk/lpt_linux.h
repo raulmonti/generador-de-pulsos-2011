@@ -37,4 +37,31 @@ unsigned int lpt_recive_byte(unsigned int port_addr);
 *****/
 bool lpt_is_busy(unsigned int port_addr);
 
+
+
+
+
+
+/*************************************************************************/
+
+/*  rutinas de Walter para comunicarse con el aparato                    */
+
+/*************************************************************************/
+
+
+bool direccion(unsigned char address);  /* escribe una direccion en el latch address */
+
+bool escritura(unsigned char data);   /* escritura de un byte de datos */
+
+void dds_word(unsigned int w);   /* transmite un word en serie  al dds */
+
+bool startLeer(void);
+
+bool endLeer(void);
+
+unsigned char leer(void) ;   /*** leer un byte en la direccion corriente ***/
+
+void setganancia(unsigned int ga, unsigned int gb);
+
+
 #endif

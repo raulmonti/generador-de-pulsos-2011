@@ -188,8 +188,8 @@ unsigned int instruction_sheet_insert_instructions
 		(instruction_sheet is, GList* instructions, unsigned int from){
 	
 	unsigned int i = 0, length = 0;
-	length = g_list_length(instructions);
 	instruction pointer = NULL;
+	length = g_list_length(instructions);
 	
 	for(i = 0; i < length; i++){
 	    pointer = g_list_nth_data(instructions, i);
@@ -211,8 +211,8 @@ phase instruction_sheet_get_phase(instruction_sheet inst_sheet, unsigned int id)
     
     
     for(i = 0; i < cota; i++){
-        p = g_list_nth_data(inst_sheet->phase_list);
-        if(phase_id(p) = id) 
+        p = g_list_nth_data(inst_sheet->phase_list, i);
+        if(phase_id(p) == id) 
             result = p;
     }
     

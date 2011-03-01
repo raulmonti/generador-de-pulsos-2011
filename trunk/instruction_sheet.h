@@ -3,6 +3,7 @@
 
 #include "instruction.h"
 #include "phase.h"
+#include <glib-2.0/glib.h>
 
 typedef struct inst_sheet_s *instruction_sheet;
 

@@ -12,21 +12,21 @@
 unsigned int get_instruction_code(instruction inst);
 void get_pattern(instruction inst, unsigned int *pattern);
 unsigned int load_program (instruction_sheet is, unsigned int current_it);
-bool load_phases_ram(instruction_sheet inst_sheet);
+bool load_phases_ram(instruction_sheet inst_sheet, unsigned int shift);
 
 
 unsigned int get_instruction_code(instruction inst){
     unsigned int result = 0;
     
-    assert(inst != NULL);
+    /*assert(inst != NULL);
     
     switch(instruction_get_type(inst)){
 		case LOOP_INST_CODE:{ result = LAZO_INST_CODE;
 				break;}
 		case ACQUIRE_INST_CODE:{result = 0x00;
-								/*En este caso no interesa la instruccion ya /
+		*/						/*En este caso no interesa la instruccion ya /
 								 * que se debe disparar el conversor AD*/
-				break;}
+	/*			break;}
 		case PULSE_INST_CODE:{result = CONTINUE_INST_CODE;
 				break;}
 		case DELAY_INST_CODE:{result = CONTINUE_INST_CODE;
@@ -35,7 +35,7 @@ unsigned int get_instruction_code(instruction inst){
 				break;}
 		case END_INST_CODE:{result = FIN_INST_CODE;
 				break;}
-	}
+	}*/
     return  result;
 }
 
@@ -49,7 +49,7 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
     unsigned int ins_count = 0, i = 0;
     instruction inst = NULL;
     phase p = NULL;
-    unsigned int p_addr = 0,
+    unsigned int p_addr = 0;
     unsigned int pattern = 0;
     unsigned int data = 0;
     int loop_level = -1; /*¿¿¿¿¿Al encontrar el primer loop se incrementa en 1 y 
@@ -77,7 +77,7 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
                 /*los Id de instruccion y fase se corresponden*/
             p = instruction_sheet_get_phase(is, instruction_get_id(inst));
             p_addr = phase_get_mem_address(p, instruction_phase_get_shift(inst));
-            pattern = (p->addr << 2);
+            pattern = (p_addr << 2);
             
             data = 0;           /*No se utiliza este campo en los 'continue'*/
             
@@ -88,7 +88,7 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
             delay = 2;
             
             result = pp2_write_instruction(pattern, data, loop_level, 
-                                           duration, inst_code);
+                                           delay, inst_code);
             
             if(pp2_transfer_instruction()) return 1;
             
@@ -98,17 +98,17 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
             pattern = 0x0080 | pattern;
             
             result = pp2_write_instruction(pattern, data, loop_level, 
-                                           duration, inst_code);
+                                           delay, inst_code);
 
             if(pp2_transfer_instruction()) return 1;
                                                                                       
             /*  Ahora bajo el pulso 9 y subo el 10 para que se cargue la nueva 
                 fase en el registro de trabajo del dds */
             
-            pattern = 0x0040 | (p->addr << 2);
+            pattern = 0x0040 | (p_addr << 2);
             
             result = pp2_write_instruction(pattern, data, loop_level, 
-                                           duration, inst_code);
+                                           delay, inst_code);
 
             if(pp2_transfer_instruction()) return 1;
             
@@ -116,13 +116,13 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
                envio el continue con el delay pedido tomando en cuenta que la 
                proxima instruccion tardara 160ns en cargarse */                               
             
-            pattern = 0x0001 | (p->addr << 2);
+            pattern = 0x0001 | (p_addr << 2);
             
             delay = instruction_get_duration(inst) - 4; /* 4*40ns es el tiempo 
                                                         de carga para la proxima 
                                                         instruccion */
             result = pp2_write_instruction(pattern, data, loop_level, 
-                                           duration, inst_code);
+                                           delay, inst_code);
 
           
         }else if(instruction_get_type(inst) == LOOP_INST_CODE){
@@ -140,11 +140,11 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
             delay = 2; /*el menor delay posible*/
             
             result = pp2_write_instruction(pattern, data, loop_level, 
-                                           duration, inst_code);
+                                           delay, inst_code);
                                            
         }else if(instruction_get_type(inst) == ENDLOOP_INST_CODE){
         
-            pattern 0;
+            pattern = 0;
             
             data = instruction_get_data(inst);
             
@@ -156,11 +156,11 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
         
         }else if(instruction_get_type(inst) == DELAY_INST_CODE){
             
-            pattern 0; /*Apago el bit 16 para que no envie el pulso*/
+            pattern = 0; /*Apago el bit 16 para que no envie el pulso*/
             
             data = 0;
             
-            isnt_code = DELAY_PP2_CODE;
+            inst_code = CONTINUE_PP2_CODE;
             
             delay = instruction_get_duration(inst) - 4; /* 4*40ns es el tiempo 
                                                         de carga para la proxima 
@@ -177,10 +177,7 @@ unsigned int load_program (instruction_sheet is, unsigned int current_it){
             inst_code = FIN_PP2_CODE;
             
         }else{
-            
             result = 2;
-        
-
         }
         
         
@@ -200,7 +197,7 @@ int main ( int argc, char *argv[]){
 
     instruction_sheet inst_sheet = NULL;
     int current_it = 0, times = 0; 
-    unsigned int result = 0;   
+    unsigned int result = 0, i = 0;   
 
     if(argc != 3){
         printf("Error. Uso: ./rmnPulseGenerator \

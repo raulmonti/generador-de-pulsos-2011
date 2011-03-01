@@ -48,8 +48,8 @@ unsigned int build_instruction (unsigned char *instruction,
     unsigned char aux[2] = {0,0};
     unsigned int result = NO_ERROR_CODE;
       
-    result = (inst_code == CONTINUE_INST_CODE || inst_code == LAZO_INST_CODE ||
-              inst_code == RETL_INST_CODE || inst_code == FIN_INST_CODE );
+    result = (inst_code == CONTINUE_PP2_CODE || inst_code == LAZO_PP2_CODE ||
+              inst_code == RETL_PP2_CODE || inst_code == FIN_PP2_CODE );
 
     if(result){        
         aux[1] = inst_code;

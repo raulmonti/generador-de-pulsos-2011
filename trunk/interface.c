@@ -102,7 +102,6 @@ void generate_configuration_sheet(instruction_sheet sheet, const char* filepath)
 	unsigned int len = 0,
 	             i = 0,
 				 line_len = 0;
-	instruction aux = NULL;
 	FILE *f = NULL;
 	bstring filenameconf = NULL,
 	        line = NULL;
@@ -184,7 +183,8 @@ void generate_configuration_sheet(instruction_sheet sheet, const char* filepath)
            pulse_list = NULL;
     unsigned int i = 0,
                  instruction_id = 0,
-                 instruction_delay = 0;
+                 instruction_delay = 0,
+                 j = 0;
     bool result = 0;
     
     /* PRE: */
@@ -198,14 +198,14 @@ void generate_configuration_sheet(instruction_sheet sheet, const char* filepath)
     for(i = 0; i < iarray_len(pulse_list); i++){
         instruction_id = iarray_nth_item(pulse_list, i);
         printf("p%i:", instruction_id);
-        scanf("%u", &instruction_delay);
+        j = scanf("%u", &instruction_delay);
         instruction_sheet_set_delay(sheet, PULSE_INST_CODE, instruction_id, instruction_delay);
     }
  
     for(i = 0; i < iarray_len(delay_list); i++){
         instruction_id = iarray_nth_item(delay_list, i);
         printf("d%i:", instruction_id);
-        scanf("%u", &instruction_delay);
+        j = scanf("%u", &instruction_delay);
         instruction_sheet_set_delay(sheet, DELAY_INST_CODE, instruction_id, instruction_delay);
     }
  

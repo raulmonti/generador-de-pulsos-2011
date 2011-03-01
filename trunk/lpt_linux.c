@@ -63,3 +63,167 @@ bool lpt_is_busy(unsigned int port_addr){
 	}
 	return (result == PORT_BUSY);
 }
+
+
+
+
+
+
+
+/*************************************************************************/
+
+/*  rutinas de Walter para comunicarse con el aparato                    */
+
+/*************************************************************************/
+
+/* Cambiar a CHAR el campo data de 'lpt_send_byte' */
+bool direccion(unsigned char address){
+    bool result = true;
+    
+    result = lpt_send_byte(LPT_CONTROL, 0x04) == 0;
+    /* Delay() */
+    
+    if (result)
+        result = lpt_send_byte(LPT_DATA, address) == 0;
+
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x07) == 0;
+        /* Delay() */
+
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x05) == 0;
+   
+   if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x04) == 0;
+   
+   return result;
+
+}
+
+
+
+bool escritura(unsigned char data){
+
+    bool result = true;
+
+    result = lpt_send_byte(LPT_CONTROL, 0x04) == 0;
+    /* Delay() */
+    
+    if (result)
+        result = lpt_send_byte(LPT_DATA, data) == 0;
+
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x0d) == 0;
+        /* Delay() */
+
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x05) == 0;    
+    
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x04) == 0;
+        /* Delay() */    
+
+    return result;
+   
+}
+
+
+
+
+
+bool endLeer(void) {
+
+    bool result = true;
+
+    result = lpt_send_byte(LPT_CONTROL, 0x24) == 0;/* bus lpt = entrada */
+
+    if (result)
+        result = lpt_send_byte(LPT_CONTROL, 0x04) == 0;
+    
+    return result;
+}
+
+
+
+
+bool startLeer(void) {
+
+    int result;
+
+    result = lpt_send_byte(LPT_CONTROL, 0x24) == 0; /* bus lpt = entrada */
+    
+    return result;
+
+}
+
+
+
+
+
+unsigned char leer(void)   /*** leer un byte en la direccion corriente ***/
+
+{   int dto, result;
+
+    /* la funcion leer() devuelve el byte leido */
+
+
+    result = lpt_send_byte(LPT_CONTROL, 0x21) == 0; /* bus inter_p = salida + RD */
+
+    if(result)
+        dto = lpt_recive_byte(LPT_DATA);
+
+    if(result)
+        result = lpt_send_byte(LPT_CONTROL, 0x24) == 0;
+
+    return(dto);
+
+}
+
+void setganancia(unsigned int ga, unsigned int gb)
+{
+ /* clk = d0,  rst/ = d1,  dq = d2*/
+
+ unsigned int i, x, w;
+
+  ga = ga & 0xff;
+  gb = gb & 0xff;
+  w = (gb * 256) | ga;
+
+
+       x = 2; /* RST =1 (habilitar DS1267)*/
+       escritura(x);
+
+    /* transmite bit de stack =0*/
+        x = 3;
+        escritura(x);
+        x = 2;
+        escritura(x);
+    /* transmitir los 16 bits de ganacia*/
+
+   for(i=0; i<=15; i++)
+     {
+          x= 2;  /* asume bit = 0 */
+
+	if(w&0x8000) x=6;
+
+	escritura(x); /* salida con fsync = 0 */
+
+        /* pulso de reloj */
+
+	x=x|1;
+
+	escritura(x);
+
+	x=x&06;
+
+	escritura(x);
+
+	w=w<<1;  /* desplazar a la izquierda un bit */
+
+     }
+
+  escritura(2);
+  escritura(0);
+}
+
+
