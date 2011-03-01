@@ -45,8 +45,7 @@ unsigned int load_program (instruction_sheet is){
         if(instruction_get_type(inst) == PULSE_INST_CODE){
         
             /*  primero direcciono la fase en la ram con los pulsos 11 al 14*/          
-                /*los Id de instruccion y fase se corresponden*/
-            p = instruction_sheet_get_phase(is, instruction_get_id(inst));
+            p = instruction_sheet_get_phase(is, instruction_get_data(inst));
             p_addr = phase_get_mem_address(p, instruction_phase_get_shift(inst));
             pattern = (p_addr << 2);
             
