@@ -162,7 +162,7 @@ bool startLeer(void) {
 
 unsigned char leer(void)   /*** leer un byte en la direccion corriente ***/
 
-{   int dto, result;
+{   int dto = 0, result = 0;
 
     /* la funcion leer() devuelve el byte leido */
 

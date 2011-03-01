@@ -18,7 +18,7 @@ phase phase_destroy(phase p);
 
 void phase_print (phase p, int times);
 
-int phase_id (phase p);
+unsigned int phase_id (phase p);
 
 /* phase_add: agrega un valor de phase 'degree' a la 
  * lista de valores posibles para la fase p

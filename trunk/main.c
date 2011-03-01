@@ -18,24 +18,24 @@ bool load_phases_ram(instruction_sheet inst_sheet, unsigned int shift);
 unsigned int get_instruction_code(instruction inst){
     unsigned int result = 0;
     
-    /*assert(inst != NULL);
+    assert(inst != NULL);
     
     switch(instruction_get_type(inst)){
-		case LOOP_INST_CODE:{ result = LAZO_INST_CODE;
+		case LOOP_INST_CODE:{ result = LAZO_PP2_CODE;
 				break;}
 		case ACQUIRE_INST_CODE:{result = 0x00;
-		*/						/*En este caso no interesa la instruccion ya /
+								/*En este caso no interesa la instruccion ya /
 								 * que se debe disparar el conversor AD*/
-	/*			break;}
-		case PULSE_INST_CODE:{result = CONTINUE_INST_CODE;
 				break;}
-		case DELAY_INST_CODE:{result = CONTINUE_INST_CODE;
+		case PULSE_INST_CODE:{result = CONTINUE_PP2_CODE;
 				break;}
-		case ENDLOOP_INST_CODE:{result = RETL_INST_CODE;
+		case DELAY_INST_CODE:{result = CONTINUE_PP2_CODE;
 				break;}
-		case END_INST_CODE:{result = FIN_INST_CODE;
+		case ENDLOOP_INST_CODE:{result = RETL_PP2_CODE;
 				break;}
-	}*/
+		case END_INST_CODE:{result = FIN_PP2_CODE;
+				break;}
+	}
     return  result;
 }
 

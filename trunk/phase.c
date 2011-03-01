@@ -54,7 +54,7 @@ phase phase_destroy(phase p){
 
 
 
-int phase_id (phase p){
+unsigned int phase_id (phase p){
     assert(p!=NULL);
     return p->id;
 }
