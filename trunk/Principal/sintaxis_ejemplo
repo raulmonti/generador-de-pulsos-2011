@@ -1,0 +1,6 @@
+phases:
+    ph1 = 0 45 90
+program:
+		d2
+		p1(ph1)
+		acquire
