@@ -71,9 +71,9 @@ unsigned int direccion(unsigned char address){
         getchar();
         }
     delayN(100);
-/*    if (!result)
+    if (!result)
         result = lpt_send_byte(LPT_CONTROL, 0x05);
-    delayN(40); Desconcozco si esta va o no*/    
+    delayN(40);    
     if (!result)
         result = lpt_send_byte(LPT_CONTROL, 0x07);
     delayN(40);
@@ -105,9 +105,9 @@ unsigned int escritura(unsigned char data){
         getchar();
         }
     delayN(40);
-  /*  if (!result)
+    if (!result)
         result = lpt_send_byte(LPT_CONTROL, 0x05);  
-    delayN(60);  Desconozco si esto va */ 
+    delayN(60);
     if (!result)
         result = lpt_send_byte(LPT_CONTROL, 0x0d);
         
