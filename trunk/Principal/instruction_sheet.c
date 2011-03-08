@@ -78,7 +78,7 @@ void instruction_sheet_print(instruction_sheet inst_sheet){
     instruction inst = NULL;
 	if(inst_sheet != NULL){
 
-		i = system("cls");
+		/*i = system("cls");*/
 		i = 0;
 		printf("Instruction Sheet\n");
 		if(inst_sheet->current_inst == NULL){

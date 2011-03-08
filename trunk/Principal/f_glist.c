@@ -98,7 +98,7 @@ void f_glist_print (f_glist fl, int times){
     int i = 0, j = 0, len = 0;
     
     len = f_glist_length(fl);
-    printf("Se imprime %i veces la lista de longitud %i:\n", times, len);
+  /*  printf("Se imprime %i veces la lista de longitud %i:\n", times, len);*/
     
     for(i = 0; i < times; i++){
         printf("[ ");
