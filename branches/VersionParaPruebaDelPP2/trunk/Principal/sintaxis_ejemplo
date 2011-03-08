@@ -1,0 +1,4 @@
+phases:
+    ph1 = 0 45 90
+program:
+    p1(ph1)
