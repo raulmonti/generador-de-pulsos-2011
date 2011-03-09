@@ -304,7 +304,7 @@ unsigned int pp2_load_program (instruction_sheet is){
             
             /*ESTE DELAY DEBErIA SER MAS LARGO ?? 300ns??*/
             
-            printf("\nDEBUG pp2_load_program instruccion de pulso: segundo continue: bajo el bit 9 y levanto bit 10\n");
+            printf("\nDEBUG pp2_load_program instruccion de pulso: tercer continue: bajo el bit 9 y levanto bit 10\n");
 
             result = pp2_write_instruction(pattern, 0, 0, delay, inst_code);
 
@@ -322,7 +322,7 @@ unsigned int pp2_load_program (instruction_sheet is){
            
             assert((pattern & 0x0001) == 1);
 
-            printf("\nDEBUG pp2_load_program instruccion de pulso: segundo continue: bajo el bit 10 y levanto bit 16\n");
+            printf("\nDEBUG pp2_load_program instruccion de pulso: cuarto continue: bajo el bit 10 y levanto bit 16\n");
 
             result = pp2_write_instruction(pattern, 0, 0, delay, inst_code);
             
