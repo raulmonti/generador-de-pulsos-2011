@@ -32,11 +32,7 @@ int main ( int argc, char *argv[]){
 
     /****************CONFIGURACION DEL DDS****************//*LISTOOOOOO*/
     printf("ETAPA DE CONFIGURACION DEL DDS\n\n");
-    dds_config();
-
-    /****************CARGA DE FRECUENCIAS DEL DDS****************//*LISTOOOOOO*/
-    printf("ETAPA DE CARGA DE FRECUENCIAS DEL DDS\n\n");
-    dds_set_freq(5000000, 5000000); /* frec1 y frec2 deseadas = 5MHz */
+    dds_config(5000000, 5000000); /* frec1 y frec2 deseadas = 5MHz */
 
     /*****************CARGAR DELAYS y DEMAS DATOS**********//*LISTOOOOOO*/
     printf("ETAPA DE CARGA DE DELAYS Y CONVERSION DE LOOPS\n\n");
@@ -58,22 +54,23 @@ int main ( int argc, char *argv[]){
           printf("Error en la carga del programa\n");      
     }
     
-    result = ad_adquirir( kpc, AD_MODO_CONTINUO, 1000000);
+    //result = ad_adquirir( kpc, AD_MODO_CONTINUO, 1000000);
 
     /* 
      *  Corro las repeticiones del experimento corriendo 
      *  la fase si asi se pidio.
      */
 
-    times = instruction_sheet_get_times(inst_sheet);
+    //times = instruction_sheet_get_times(inst_sheet);
        
-    for(i = 1; i < abs(times); i++){
-        if(times < 0){       /*times negativo indica cambio de fase en c/prueba*/
-                dds_load_phases_ram(inst_sheet, i);
-            }
-        result = pp2_launch_pulse_sequence();
-        result = ad_adquirir(kpc, AD_MODO_CONTINUO, 1000000);
-    }
-    printf("Termianndo el programa con result = %i\n",result);   
+    //for(i = 1; i < abs(times); i++){
+    //    if(times < 0){       /*times negativo indica cambio de fase en c/prueba*/
+    //            dds_load_phases_ram(inst_sheet, i);
+    //        }
+    //    result = pp2_launch_pulse_sequence();
+    //    result = ad_adquirir(kpc, AD_MODO_CONTINUO, 1000000);
+    //}
+
+    printf("\nTermianndo el programa con result = %i\n",result);   
     return result;        
 }

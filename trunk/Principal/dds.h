@@ -25,8 +25,7 @@ void dds_enable();
 void dds_disable();
 void dds_reset();
 
-void dds_config();
-void dds_set_freq(long double frec_1, long double frec_2);
+void dds_config(long double frec_1, long double frec_2);
 bool dds_load_phases_ram(instruction_sheet inst_sheet, unsigned int shift);
 unsigned int dds_activate_ram_write (void);
 unsigned int dds_desactivate_ram_write (void);

@@ -5,7 +5,14 @@
 
 unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_value);    
 
+void dds_set_freq(long double frec_1, long double frec_2);
+
+/******************************************************************************/
+
+
 unsigned int activate_ram_write (void){
+
+    printf("\nActivando la escritura en la ram\n");
 
     dds_set_address(DDS_REG_COM1);
     dds_write(0x02);
@@ -13,6 +20,8 @@ unsigned int activate_ram_write (void){
     return 0;
 }
 
+
+/******************************************************************************/
 
 unsigned int desactivate_ram_write (void){
 
@@ -23,6 +32,7 @@ unsigned int desactivate_ram_write (void){
 }
 
 
+/******************************************************************************/
 
 unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_value){
 
@@ -30,12 +40,17 @@ unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_va
     
     value = value % 360;           //Para que el valor sea 'real'  
     value = 45.508 * phase_value;  // convertimos a valor de 14bits
+
+    printf("\n\t\tDDS_LOAD_PHASES_RAM DEBUG:\n\n");
+    printf("Se grabara el valor %u en la direccion %X de la ram\n\n", phase_value, mem_address);
     
 /*    printf("LSB del valor de la fase: %X\n", value);*/
 
     
     activate_ram_write();          //Modo escritura de RAM 
     
+    printf("\nGrabando la ram: \n");
+
     dds_set_address(RAM_REG_COM1);
     dds_write(mem_address+add);
     dds_set_address(RAM_REG_WRITE);
@@ -45,6 +60,7 @@ unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_va
     dds_set_address(RAM_REG_WRITE);
     value = phase_value>>8;        //MSB
     dds_write(value);
+    printf("\nSe desactiva la escritura en ram:\n");
 
     desactivate_ram_write();       //Modo PC
 /*    printf("MSB del valor de la fase: %X\n",value);*/
@@ -64,7 +80,7 @@ bool dds_set_address(unsigned char address){
     
     if (result)
         result = lpt_send_byte(LPT_DATA, address) == 0;
-
+        printf("\ndireccion: %X\n", address);
     if (result)
         result = lpt_send_byte(LPT_CONTROL, 0x07) == 0;
         /* Delay() */
@@ -90,6 +106,7 @@ bool dds_write(unsigned char data){
     
     if (result)
         result = lpt_send_byte(LPT_DATA, data) == 0;
+        printf("\nEscritura: %X\n", data);
 
     if (result)
         result = lpt_send_byte(LPT_CONTROL, 0x0d) == 0;
@@ -303,55 +320,52 @@ void dds_set_freq(long double frec_1, long double frec_2){
    
 }
 
-void dds_config(){
+void dds_config(long double frec_1, long double frec_2){
      
-     long int t;
-     
-          
-     // Seteamos valores por Default al LPT
-     lpt_send_byte(LPT_CONTROL, 0x04);
-     lpt_send_byte(LPT_DATA, 0x00);
+    long int t;
+             
+    // Seteamos valores por Default al LPT
+    lpt_send_byte(LPT_CONTROL, 0x04);
+    lpt_send_byte(LPT_DATA, 0x00);
 
-     // resetear y desactivar el DDS
-
-  direccion(0x71); // direcionar registro de comando
+    // resetear y desactivar el DDS
+    direccion(0x71); // direcionar registro de comando
     escritura(0x00); //modo PC
- // Master RESET
+ 
+    // Master RESET
+    direccion(0x72);
+    escritura(0x00);
 
-   direccion(0x72);
-   escritura(0x00);
+    for(t=0; t<40000000; t++);  //delay
 
-    for(t=0; t<40000000; t++);
-
- // configurar el DDS
-
-  direccion(0x75); //direccionar registro 1f
-   escritura(0x1f);
+    // configurar el DDS
+    direccion(0x75);    //direccionar registro 1f
+    escritura(0x1f);
     direccion(0x78);
-     escritura(0x02);    // modo FSK, UDCLK externo
-     //escritura(0x03);    // modo FSK, UDCLK interno
+    escritura(0x02);    // modo FSK, UDCLK externo
+    //escritura(0x03);    // modo FSK, UDCLK interno
 
-
-  direccion(0x75); //direccionar registro 1d del DDS
-   escritura(0x1d);
+    direccion(0x75);   //direccionar registro 1d del DDS
+    escritura(0x1d);
     direccion(0x78);
-      escritura(0x17); // 00010111, todo en PowerDown
+    escritura(0x17);   // 00010111, todo en PowerDown
 
-
-  direccion(0x75); //direccionar registro 1e
-   escritura(0x1e);
+    direccion(0x75);   //direccionar registro 1e
+    escritura(0x1e);
     direccion(0x78);
-   //   escritura(0x46);  //PLL out. 0x44 = 200Mhz, 0x45 = 250Mhz, 0x46 = 300Mhz
-        escritura(0x44);  //PLL out. 0x44 = 200Mhz, 0x45 = 250Mhz, 0x46 = 300Mhz
+    //   escritura(0x46);  //PLL out. 0x44 = 200Mhz, 0x45 = 250Mhz, 0x46 = 300Mhz
+    escritura(0x44);    //PLL out. 0x44 = 200Mhz, 0x45 = 250Mhz, 0x46 = 300Mhz
 
-  direccion(0x75); //direccionar registro 20
-   escritura(0x20);
+    direccion(0x75);    //direccionar registro 20
+    escritura(0x20);
     direccion(0x78);
-     escritura(0x00);    // Shape keying deshabilitado
-                          // filtro deshabilitado     
+    escritura(0x00);    // Shape keying deshabilitado
+                        // filtro deshabilitado
+
+    // Configuracion de las frecuencias
+    dds_set_freq(frec_1, frec_2);
+
 }
-
-
 
 
 
@@ -451,6 +465,11 @@ void dds_reset(){
                           // filtro deshabilitado
 }
 
+
+
+/******************************************************************************/
+/* Carga los valores de FASE en la RAM-FASE                                   */
+/******************************************************************************/
 bool dds_load_phases_ram(instruction_sheet inst_sheet, unsigned int shift){
         unsigned int count_phases = 0,
                      count_phases_value = 0,
@@ -459,26 +478,29 @@ bool dds_load_phases_ram(instruction_sheet inst_sheet, unsigned int shift){
                      phase_value = 0,
                      next_base_address = 0;             
         phase p = NULL;
-        bool result = true;
+        bool result = 0;
         
+        printf("\n\t\tDEBUG dds_load_phases_ram:\n\n");
+
         assert(inst_sheet != NULL);
         
         count_phases = instruction_sheet_phase_count(inst_sheet);
-        if (count_phases > RAM_SPACE_SIZE) result = false;
+        if (count_phases > RAM_SPACE_SIZE) result = 1;
         else{
             next_base_address = 0;
             for(n = 0; n < count_phases; n++){
                 p = instruction_sheet_get_nth_phase(inst_sheet, n);
-                assert(p != NULL);
-                
+                assert(p != NULL);              
                 phase_set_base_address(p, next_base_address);
-                /*printf("Direccion Base de la phase %i con shift %u es: %i\n",phase_id(p), shift, next_base_address);*/
+
+                printf("Se graba la fase: \n");
+                phase_print(p,1);
+                printf("a partir de la direccion bse %i, con un corrimento de %u\n\n", next_base_address, shift);
+
                 count_phases_value = phase_count_values(p);
                 for(m = 0; m < count_phases_value; m++){
-                    phase_value = phase_nth_value(p, m + shift);
-                                                           
-                    dds_load_ram_phase(next_base_address, phase_value);                           
-                                        
+                    phase_value = phase_nth_value(p, m + shift);                                                         
+                    dds_load_ram_phase(next_base_address, phase_value);                                                               
                     next_base_address++;    
                 }
             }
