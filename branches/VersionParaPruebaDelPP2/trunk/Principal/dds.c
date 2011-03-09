@@ -28,25 +28,25 @@ unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_va
 
     unsigned char add = 1, value = 0;
     
-    value = value % 360;           //Para que el valor sea 'real'  
+    phase_value = phase_value % 360;           //Para que el valor sea 'real'  
     value = 45.508 * phase_value;  // convertimos a valor de 14bits
     
 /*    printf("LSB del valor de la fase: %X\n", value);*/
 
+printf("DEBUG:                Dir: %X  phase %X:\n", mem_address, phase_value);
+printf("DEBUG:                LSB: %X  MSB %X:\n", (unsigned char)phase_value, phase_value>>8);
     
-    activate_ram_write();          //Modo escritura de RAM 
+    direccion(RAM_REG_COM1);
+    escritura(mem_address);
+    direccion(RAM_REG_WRITE);       //LSB
+    escritura(phase_value);
+    direccion(RAM_REG_COM1);
+    escritura(mem_address+add);
+    direccion(RAM_REG_WRITE);
+    value = phase_value>>8; 
+    escritura(value);              //MSB
     
-    dds_set_address(RAM_REG_COM1);
-    dds_write(mem_address+add);
-    dds_set_address(RAM_REG_WRITE);
-    dds_write(value);              //LSB
-    dds_set_address(RAM_REG_COM1);
-    dds_write(mem_address);
-    dds_set_address(RAM_REG_WRITE);
-    value = phase_value>>8;        //MSB
-    dds_write(value);
 
-    desactivate_ram_write();       //Modo PC
 /*    printf("MSB del valor de la fase: %X\n",value);*/
     
     return 0;
@@ -64,6 +64,10 @@ bool dds_set_address(unsigned char address){
     
     if (result)
         result = lpt_send_byte(LPT_DATA, address) == 0;
+
+    delayN(40);
+    if (!result)
+        result = lpt_send_byte(LPT_CONTROL, 0x05);  
 
     if (result)
         result = lpt_send_byte(LPT_CONTROL, 0x07) == 0;
@@ -90,6 +94,10 @@ bool dds_write(unsigned char data){
     
     if (result)
         result = lpt_send_byte(LPT_DATA, data) == 0;
+
+    delayN(40);
+    if (!result)
+        result = lpt_send_byte(LPT_CONTROL, 0x05);  
 
     if (result)
         result = lpt_send_byte(LPT_CONTROL, 0x0d) == 0;
@@ -314,12 +322,12 @@ void dds_config(){
 
      // resetear y desactivar el DDS
 
-  direccion(0x71); // direcionar registro de comando
-    escritura(0x00); //modo PC
- // Master RESET
+     direccion(0x71); // direcionar registro de comando
+     escritura(0x00); //modo PC
+     // Master RESET
 
-   direccion(0x72);
-   escritura(0x00);
+     direccion(0x72);
+     escritura(0x00);
 
     for(t=0; t<40000000; t++);
 
@@ -466,6 +474,7 @@ bool dds_load_phases_ram(instruction_sheet inst_sheet, unsigned int shift){
         count_phases = instruction_sheet_phase_count(inst_sheet);
         if (count_phases > RAM_SPACE_SIZE) result = false;
         else{
+            activate_ram_write();          //Modo escritura de RAM  
             next_base_address = 0;
             for(n = 0; n < count_phases; n++){
                 p = instruction_sheet_get_nth_phase(inst_sheet, n);
@@ -479,9 +488,18 @@ bool dds_load_phases_ram(instruction_sheet inst_sheet, unsigned int shift){
                                                            
                     dds_load_ram_phase(next_base_address, phase_value);                           
                                         
-                    next_base_address++;    
+                    next_base_address += 2;    
                 }
             }
+            
+            desactivate_ram_write();       //Modo PC
+            /*Habitlitar lectura de las fases desde la RAM*/
+           // direccion(0x71);
+           // escritura(0x04);
+            
+            direccion(0x71); // direcionar registro de comando
+            escritura(0x05); //modo DDS con transferencia  de fases
+
         }
     return result;
 }

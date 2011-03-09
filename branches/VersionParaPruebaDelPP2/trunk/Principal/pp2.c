@@ -101,11 +101,11 @@ unsigned int pp2_write_instruction( unsigned int pattern, unsigned int data,
     if(!lpt_is_busy(LPT_BASE)){
         result = pp2_build_instruction(instruction, pattern, data, loop_level, delay, inst_code);
 
-        printf("INSTRUCCION A PUNTO DE ENVIARSE:\n");
-        for(i = 0; i < INST_LENGTH; i++){
-              printf("%X\n",instruction[i]);
-        }
-        printf("\n\n");
+       // printf("INSTRUCCION A PUNTO DE ENVIARSE:\n");
+      //  for(i = 0; i < INST_LENGTH; i++){
+      //        printf("%X\n",instruction[i]);
+      //  }
+       // printf("\n\n");
 
         if(result == NO_ERROR_CODE){                       
             result = direccion(INSTRUCTION_REG_ADDR);        
@@ -241,9 +241,9 @@ unsigned int pp2_load_program (instruction_sheet is){
                            quedamos en el nivel 0*/    
     unsigned int inst_code = 0, delay = 0, result = 0;
     
-    printf("\n\t\tPP2_LOAD_PROGRAM DEBUG:\n\n");
+   // printf("\n\t\tPP2_LOAD_PROGRAM DEBUG:\n\n");
 
-    printf("\nReseteando y luego abilitando el PP2\n");
+  //  printf("\nReseteando y luego abilitando el PP2\n");
     if(pp2_full_reset()){
 		return 1;
 	}else if(pp2_charge_mode_enabled()){
@@ -259,7 +259,7 @@ unsigned int pp2_load_program (instruction_sheet is){
         /*Si es pulso tengo que cambiar fase (lo hago con en 3 continue seguidos)*/
         if(instruction_get_type(inst) == PULSE_INST_CODE){
 
-            printf("\nDEBUG 'pp2_load_program': Se encontro una instruccion de pulso en el IS y nos disponemos a cargarla en el PP2\n");
+          //  printf("\nDEBUG 'pp2_load_program': Se encontro una instruccion de pulso en el IS y nos disponemos a cargarla en el PP2\n");
 
             /*  primero direcciono la fase en la ram con los pulsos 11 al 14*/
             /*  En el campo data de cada instruccion de tipo pulso se encuentra 
@@ -268,47 +268,48 @@ unsigned int pp2_load_program (instruction_sheet is){
             /* Debemos tener en cuenta que el pulso puede pertenecer a un bucle 
                con corrimiento de fase. */
             p_addr = phase_get_mem_address(p, instruction_phase_get_shift(inst));
-            /* Los bits de direccionamiento de l ram fase son b11,b12,b13,b14 
-               (comenzando desde b1). */
-            pattern = (p_addr << 1);
+
+            printf("\nADDRESS: %X\n",p_addr);
+            /* Los bits de direccionamiento de l ram fase son b10,b11,b12,b13 */
+            pattern = (p_addr << 10);
 
             inst_code = CONTINUE_PP2_CODE;   
          
             delay = 2;            
 
-            printf("\nDEBUG pp2_load_program instruccion de pulso: primer continue: estabilizo el pattern\n");
+          //  printf("\nDEBUG pp2_load_program instruccion de pulso: primer continue: estabilizo el pattern\n");
 
             result = pp2_write_instruction(pattern, 0, 0, delay, inst_code);  
 
-            printf("\nTRANSFIRIENDO...\n");            
+          //  printf("\nTRANSFIRIENDO...\n");            
 
             if(pp2_transfer_instruction() || result) return 1;
             
             /* enciendo el pulso 9 manteniendo la fase ya cargada en pattern
             de este modo cargo la fase en el dds (el delay es el minimo: 2)*/
 
-            pattern = 0x0080 | pattern;
+            pattern = 0x0100 | pattern;
             
-            printf("\nDEBUG pp2_load_program instruccion de pulso: segundo continue: levanto bit 9\n");
+           // printf("\nDEBUG pp2_load_program instruccion de pulso: segundo continue: levanto bit 8\n");
 
-            result = pp2_write_instruction(pattern, 0, 0, delay, inst_code);
+            result = pp2_write_instruction(pattern, 0, 0, 2, inst_code);
             
-            printf("\nTRANSFIRIENDO...\n");
+           // printf("\nTRANSFIRIENDO...\n");
 
             if(pp2_transfer_instruction() || result) return 1;
                                                                                       
             /*  Ahora bajo el pulso 9 y subo el 10 para que se cargue la nueva 
                 fase en el registro de trabajo del dds */
             
-            pattern = 0x0040 | (p_addr << 1);
+            pattern = 0x0200 | (p_addr << 10);
             
             /*ESTE DELAY DEBErIA SER MAS LARGO ?? 300ns??*/
             
-            printf("\nDEBUG pp2_load_program instruccion de pulso: tercer continue: bajo el bit 9 y levanto bit 10\n");
+           // printf("\nDEBUG pp2_load_program instruccion de pulso: tercer continue: bajo el bit 8 y levanto bit 9\n");
 
             result = pp2_write_instruction(pattern, 0, 0, delay, inst_code);
 
-            printf("\nTRANSFIRIENDO...\n");
+            //printf("\nTRANSFIRIENDO...\n");
             
             if(pp2_transfer_instruction() || result) return 1;
             
@@ -316,17 +317,15 @@ unsigned int pp2_load_program (instruction_sheet is){
                envio el continue con el delay pedido tomando en cuenta que la 
                proxima instruccion tardara 160ns en cargarse */                               
             
-            pattern = 0x0001 | (p_addr << 1);
+            pattern = 0x8000 | (p_addr << 10);
                  
             delay = instruction_get_duration(inst); 
            
-            assert((pattern & 0x0001) == 1);
-
-            printf("\nDEBUG pp2_load_program instruccion de pulso: cuarto continue: bajo el bit 10 y levanto bit 16\n");
+           // printf("\nDEBUG pp2_load_program instruccion de pulso: cuarto continue: bajo el bit 10 y levanto bit 16\n");
 
             result = pp2_write_instruction(pattern, 0, 0, delay, inst_code);
             
-            printf("\nTRANSFIRIENDO...\n");
+           // printf("\nTRANSFIRIENDO...\n");
 
             if(pp2_transfer_instruction() || result) return 1;
           
@@ -335,6 +334,8 @@ unsigned int pp2_load_program (instruction_sheet is){
             data = instruction_get_data(inst);
             
             loop_level++;
+
+            printf("loop_level: %i\n",loop_level);
             
             assert(loop_level <= 3);
             
@@ -350,8 +351,10 @@ unsigned int pp2_load_program (instruction_sheet is){
         }else if(instruction_get_type(inst) == ENDLOOP_INST_CODE){
 
             data = instruction_get_data(inst);
+
+            printf("\ndata: %X, loop_level: %i\n",data,loop_level-1);            
+
             
-            loop_level--;
             
             inst_code = RETL_PP2_CODE;
             
@@ -360,10 +363,12 @@ unsigned int pp2_load_program (instruction_sheet is){
             result = pp2_write_instruction(0, data, loop_level, delay, inst_code);
 
             if(pp2_transfer_instruction() || result) return 1;
-            
+
+            loop_level--;            
+
         }else if(instruction_get_type(inst) == DELAY_INST_CODE){
 
-            pattern = 0; /*Apago el bit 16 para que no envie el pulso*/
+            pattern = 0x0000; /*Apago el bit 16 para que no envie el pulso*/
 
             inst_code = CONTINUE_PP2_CODE;
 
@@ -375,7 +380,7 @@ unsigned int pp2_load_program (instruction_sheet is){
                                            
         }else if(instruction_get_type(inst) == ACQUIRE_INST_CODE){
 
-            pattern = 16; /* activo el bit 5 para que active el AD */
+            pattern = 0x0010; /* activo el bit 4 para que active el AD */
 
             inst_code = CONTINUE_PP2_CODE;
 
@@ -402,15 +407,15 @@ unsigned int pp2_load_program (instruction_sheet is){
 		}
     }  
            
-    assert(loop_level == 0 || loop_level == -1);
+    /*assert(loop_level == 0 || loop_level == -1);*/
     
     inst_code = FIN_PP2_CODE;
 
-    printf("\nDEBUG pp2_load_program instruccion de pulso: transifiriendo la instruccion de fin\n");
+   // printf("\nDEBUG pp2_load_program instruccion de pulso: transifiriendo la instruccion de fin\n");
 
     result = pp2_write_instruction(0, 0, 0, 2, inst_code);
 
-    printf("\nTRANSFIRIENDO...\n");
+    //printf("\nTRANSFIRIENDO...\n");
 
     if(pp2_transfer_instruction() || result) return 1;  
     

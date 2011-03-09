@@ -115,7 +115,7 @@ unsigned int phase_get_mem_address(phase p, unsigned int shift){
 	assert(len != 0);
 	
 	index = shift % len;
-	result = p->baseAddr + index;
+	result = p->baseAddr + index*2;
 	
 	return result;
 	

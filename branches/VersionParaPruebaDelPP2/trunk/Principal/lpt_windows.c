@@ -66,9 +66,9 @@ unsigned int direccion(unsigned char address){
     delayN(30);
     
     if (!result){
-        printf("\nDEBUG 'direccion': cambiando de direccion a: %X\n", address);
+        //printf("\nDEBUG 'direccion': cambiando de direccion a: %X\n", address);
         result = lpt_send_byte(LPT_DATA, address);
-        getchar();
+        //getchar();
         }
     delayN(100);
     if (!result)
@@ -100,9 +100,9 @@ unsigned int escritura(unsigned char data){
 
     delayN(80);
     if (!result){
-        printf("\nDEBUG 'escritura': enviando el dato: %X\n", data);
+        //printf("\nDEBUG 'escritura': enviando el dato: %X\n", data);
         result = lpt_send_byte(LPT_DATA, data);
-        getchar();
+        //getchar();
         }
     delayN(40);
     if (!result)
