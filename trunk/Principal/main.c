@@ -13,7 +13,7 @@
 int main ( int argc, char *argv[]){
     instruction_sheet inst_sheet = NULL;
     int times = 0; 
-    unsigned int result = 0, i = 0, kpc = 32;   
+    unsigned int result = 0, i = 0, kpc = 32, mps = 1000000;   
 
    /* if(argc != 3){
         printf("Error. Uso: ./rmnPulseGenerator \
@@ -27,13 +27,17 @@ int main ( int argc, char *argv[]){
     if(inst_sheet == NULL){
         printf("Error:(mostrar mensaje de error devuelto) codigo: %i\n",result);
         getchar(); 
-        return 0;
+        return 1;
     }
-
     /****************CONFIGURACION DEL DDS****************//*LISTOOOOOO*/
     printf("ETAPA DE CONFIGURACION DEL DDS\n\n");
     dds_config();
     
+    /****************CONFIGURACION DEL A/D****************//*LISTOOOOOO*/
+    printf("ETAPA DE CONFIGURACION DEL A/D\n\n");
+    ad_config(mps, kpc, AD_MODO_CONTINUO);
+
+
     /****************CARGA DE FRECUENCIAS DEL DDS****************//*LISTOOOOOO*/
     printf("ETAPA DE CARGA DE FRECUENCIAS DEL DDS\n\n");
     dds_set_freq(5000000, 5000000); /* frec1 y frec2 deseadas = 5MHz */
@@ -71,7 +75,7 @@ int main ( int argc, char *argv[]){
           printf("Error en la carga del programa\n");      
     }
     
-   // result = ad_adquirir( kpc, AD_MODO_CONTINUO, 1000000);
+    result = ad_adquirir(kpc, AD_MODO_CONTINUO);
 
     /* 
      *  Corro las repeticiones del experimento corriendo 
@@ -89,5 +93,5 @@ int main ( int argc, char *argv[]){
     }
 */
     printf("\n>>>  TERMINANDO EL PROGRAMA CON RESULT = %i  <<<\n",result);   
-    return result;        
+    return 3;        
 }
