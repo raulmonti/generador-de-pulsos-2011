@@ -8,3 +8,4 @@ program:
 		p2(ph2)
 		endloop
 	endloop
+	acquire

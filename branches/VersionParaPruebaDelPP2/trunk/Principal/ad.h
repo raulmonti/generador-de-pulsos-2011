@@ -8,7 +8,9 @@
 #define AD_MODO_CONTINUO 1
 
 
-unsigned int ad_adquirir(unsigned int kpc, unsigned int adqm, unsigned int mps);
+bool ad_config (unsigned int mps, unsigned int kpc, unsigned int adqm);
+
+unsigned int ad_adquirir(unsigned int kpc, unsigned int adqm);
 
 #endif
 
