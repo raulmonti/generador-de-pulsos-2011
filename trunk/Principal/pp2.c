@@ -269,7 +269,7 @@ unsigned int pp2_load_program (instruction_sheet is){
                con corrimiento de fase. */
             p_addr = phase_get_mem_address(p, instruction_phase_get_shift(inst));
 
-            printf("\nADDRESS: %X\n",p_addr);
+           // printf("\nADDRESS: %X\n",p_addr);
             /* Los bits de direccionamiento de l ram fase son b10,b11,b12,b13 */
             pattern = (p_addr << 10);
 
@@ -335,7 +335,7 @@ unsigned int pp2_load_program (instruction_sheet is){
             
             loop_level++;
 
-            printf("loop_level: %i\n",loop_level);
+           // printf("loop_level: %i\n",loop_level);
             
             assert(loop_level <= 3);
             
@@ -352,9 +352,7 @@ unsigned int pp2_load_program (instruction_sheet is){
 
             data = instruction_get_data(inst);
 
-            printf("\ndata: %X, loop_level: %i\n",data,loop_level-1);            
-
-            
+           // printf("\ndata: %X, loop_level: %i\n",data,loop_level-1);               
             
             inst_code = RETL_PP2_CODE;
             
