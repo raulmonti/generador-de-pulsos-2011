@@ -17,11 +17,11 @@ ad_t ad_create(void);
 
 ad_t ad_destroy(ad_t ad);
 
-bool ad_config (ad_t ad, unsigned int mps, unsigned int kpc, unsigned int adqm);
+ad_t ad_config (unsigned int mps, unsigned int kpc, unsigned int adqm);
 
 unsigned int ad_adquirir(ad_t ad);
 
-void ad_to_file(ad_t ad);    
+void ad_to_file(ad_t ad, char *output_file);    
 
 #endif
 

@@ -3,6 +3,8 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <time.h>
 
 
 struct t_ad{
@@ -11,6 +13,7 @@ struct t_ad{
     unsigned int kpc;   //Kbytes de adquisicion por ciclo
     unsigned short *canala;
     unsigned short *canalb;
+    unsigned int adq_count;
 };
 
 
@@ -35,6 +38,7 @@ ad_t ad_create(void){
     assert(ad!=NULL);
     ad->conf = 0x00;
     ad->modo = AD_MODO_MODULADO;
+    ad->adq_count = 0;
     return ad;
 }
 
@@ -44,10 +48,14 @@ ad_t ad_destroy(ad_t ad){
 }
 
 
-bool ad_config (ad_t ad, unsigned int mps, unsigned int kpc, unsigned int adqm){
+ad_t ad_config (unsigned int mps, unsigned int kpc, unsigned int adqm){
 
     bool result = false;  
     unsigned char N = 0;
+    ad_t ad = NULL;
+
+    ad = ad_create();
+    assert(ad!=NULL);
 
     /* Modo PC para configurarlo */
     ad_set_modo_pc(ad);
@@ -66,7 +74,7 @@ bool ad_config (ad_t ad, unsigned int mps, unsigned int kpc, unsigned int adqm){
             result = escritura(0x00);
     }else {
         printf("Error en la cantidad de muestras por segundo\n");        
-        result = 1;
+        return NULL;
     }
         
     assert(kpc==1 || kpc==2 || kpc==4 || kpc==8 || kpc==16 || kpc==32 || kpc==64);
@@ -105,7 +113,7 @@ bool ad_config (ad_t ad, unsigned int mps, unsigned int kpc, unsigned int adqm){
     if(!result){
         result = escritura(ad->conf);
     } 
-    return result;
+    return ad;
 }
 
 /******************************************************************************/
@@ -169,7 +177,8 @@ unsigned int ad_adquirir(ad_t ad){
         result = endLeer();
         printf("leyo b = %u\n",b);
      }
-              
+    ad->adq_count++;    
+          
     ad_leer_buffers(ad);
                       
     return result;
@@ -247,12 +256,36 @@ bool ad_leer_buffers(ad_t ad){
 /******************************************************************************/
 
 
-void ad_to_file(ad_t ad){
+void ad_to_file(ad_t ad, char *output_file){
 
     FILE *output_ad = NULL;
     int i = 0;
+    char adq_count[4];
+    char file[150];
+    char dateTime[200];
+    
+    
 
-    output_ad = fopen("output_ad.txt", "w");
+    time_t tiempo = time(0);
+    struct tm *tlocal = localtime(&tiempo);
+    sprintf(adq_count, "%d", ad->adq_count);
+
+    file[0] = '\0';
+    strcat(file,"adoutput/");
+    if(output_file != NULL){
+        assert(strlen(output_file)<100);
+        strcat(file, output_file);
+    }else{
+        strcat(file,"ad_");
+        strftime(dateTime,128,"%d-%m-%y_h%Hm%Ms%S_", tlocal);
+        strcat(file,dateTime);
+        strcat(file,"output");
+    //    printf("%s\n",file);
+    }    
+    strcat(file,adq_count);
+    strcat(file,".txt");
+
+    output_ad = fopen(file, "w");
     assert(ad->canala != NULL && ad->canalb != NULL);
     for(i = 0; i < ad->kpc*1024; i++){
           fprintf(output_ad, "canala %i\tcanalb %i\n" , ad->canala[i], ad->canalb[i]);
