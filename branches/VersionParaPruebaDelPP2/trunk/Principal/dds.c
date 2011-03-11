@@ -33,8 +33,8 @@ unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_va
     
 /*    printf("LSB del valor de la fase: %X\n", value);*/
 
-printf("DEBUG:                Dir: %X  phase %X:\n", mem_address, phase_value);
-printf("DEBUG:                LSB: %X  MSB %X:\n", (unsigned char)phase_value, phase_value>>8);
+//printf("DEBUG:                Dir: %X  phase %X:\n", mem_address, phase_value);
+//printf("DEBUG:                LSB: %X  MSB %X:\n", (unsigned char)phase_value, phase_value>>8);
     
     direccion(RAM_REG_COM1);
     escritura(mem_address);
