@@ -128,7 +128,9 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
     }
     
     result = ad_adquirir(ad);
-    ad_to_file(ad, ad_output);
+    if(strcmp("",ad_output)){
+        ad_to_file(ad, ad_output);
+    }
 
     for(i = 1; i < abs(times); i++){
         if(times < 0){      /*times negativo indica cambio de fase en c/prueba*/
@@ -137,10 +139,11 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
         pp2_microprocessor_mode_enabled();
         result = pp2_launch_pulse_sequence();
         result = ad_adquirir(ad);
-        ad_to_file(ad, ad_output);
+        if(strcmp("",ad_output)){
+            ad_to_file(ad, ad_output);
+        }
     }
 
-    
     ad = ad_destroy(ad);
     inst_sheet = instruction_sheet_destroy(inst_sheet);   
     
