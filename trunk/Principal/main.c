@@ -24,16 +24,16 @@ int main ( int argc, char *argv[]){
 
     }else if(!strcmp(argv[1],"mainRun")){
 
-     /*   if(argv[1]==NULL || argv[2]==NULL || argv[3]==NULL || argv[4]==NULL ||
+        if(argv[1]==NULL || argv[2]==NULL || argv[3]==NULL || argv[4]==NULL ||
            argv[5]==NULL || argv[6]==NULL || argv[7]==NULL || argv[8]==NULL ||
            argv[9]==NULL){
             printf("Faltan argumetos para mainRun\n");
             return 1;
         }
         result = main_run (argv[1], argv[2], argv[3], argv[4], argv[5], argv[6],
-                           argv[7], argv[8], argv[9]);*/
-        result = main_run ("sintaxis_ejemplo", "config_conf", 1000000, 1, AD_MODO_CONTINUO, 5000000,
-                           5000000, "probando", 10);
+                           argv[7], argv[8], argv[9]);
+        /*result = main_run ("sintaxis_ejemplo", "config_conf", 1000000, 1, AD_MODO_CONTINUO, 5000000,
+                           5000000, "probando", 10);*/
 
     }else if(!strcmp(argv[1],"mainDDSEnable")){
 
