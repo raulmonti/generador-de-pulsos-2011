@@ -15,22 +15,22 @@
 #include <string.h>
 #include "error.h"
 
+
 #include "formGrafico.h"
 
 using namespace std;
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-#pragma link "TDLPortIO"
 #pragma resource "*.dfm"
 
 #define MAX_SAMPLES 100000
-#define SYSCALL_MAIN_NAME "C\\rmnPruebaPP2.exe"
-#define SYSCALL_PARSE_NAME "mainParsePulseSheetProgram"
-#define SYSCALL_EXECUTE_NAME "mainExecuteProgram"
+#define SYSCALL_MAIN_NAME "rmnController.exe"
+#define SYSCALL_PARSE_NAME "mainParsePulseProgram"
+#define SYSCALL_EXECUTE_NAME "mainRun"
 #define FASES_FILE_PATH "fases.dat"
 #define INSTRUCCIONES_FILE_PATH "instrucciones.dat"
-#define DEFAULT_CONFIG_FILE "config_conf";
+#define DEFAULT_CONFIG_FILE "C\\config_conf";
 
 TformPrincipal *formPrincipal;
 unsigned int error;
@@ -359,13 +359,13 @@ void __fastcall TformPrincipal::botonParsearHojaClick(TObject *Sender)
         *str << " ";
         *str << SYSCALL_PARSE_NAME;
         *str << " ";
-        *str << hojaPulsosPath->str();
+        *str << formPrincipal->campoHojaPulsos->Text.c_str();
         *str << " ";
         *str << FASES_FILE_PATH;
         *str << " ";
         *str << INSTRUCCIONES_FILE_PATH;
-
-        //error = system(str->str().c_str()); // AGREGAR A error.h TODAS LAS CONSTANTES DE ERROR QUE PUEDE DEVOLVER system()
+//        ShowMessage(str->str().c_str());
+        error = system(str->str().c_str()); // AGREGAR A error.h TODAS LAS CONSTANTES DE ERROR QUE PUEDE DEVOLVER system()
         if(error != NO_ERROR){
             formPrincipal->botonEjecutar->Enabled = false;
             formPrincipal->botonGuardarAdquisiciones->Enabled = false;
@@ -413,7 +413,7 @@ void __fastcall TformPrincipal::botonCargarConfiguracionClick(
       TObject *Sender)
 {
     dialogoAbrirArchivo->Execute();
-    campoCargarConfig->Text = dialogoAbrirArchivo->FileName;    
+    campoCargarConfig->Text = dialogoAbrirArchivo->FileName;
 }
 //---------------------------------------------------------------------------
 
@@ -685,6 +685,47 @@ char *buildConfigFile(){
     return DEFAULT_CONFIG_FILE;
 }
 
+int getOpMode(){
+    switch(formPrincipal->grupoModoOperacion->ItemIndex){
+        case 0:{return 0;
+                break;
+        }
+        case 1:{return 1;
+                break;
+        }
+        default: return -1;
+     }
+}
+
+int getKPC(){
+     switch(formPrincipal->grupoTamBuffer->ItemIndex){
+        case 0:{return 1;
+                break;
+        }
+        case 1:{return  2;
+                break;
+        }
+        case 2:{return  4;
+                break;
+        }
+        case 3:{return  8;
+                break;
+        }
+        case 4:{return  16;
+                break;
+        }
+        case 5:{return  32;
+                break;
+        }
+        case 6:{return  64;
+                break;
+        }
+        case 7:{return  128;
+                break;
+        }
+     }
+}
+
 void __fastcall TformPrincipal::botonEjecutarClick(TObject *Sender)
 {
 
@@ -727,7 +768,7 @@ void __fastcall TformPrincipal::botonEjecutarClick(TObject *Sender)
             savePath = formPrincipal->Edit1->Text.c_str();
         }
     }else if (error == NO_ERROR){
-        savePath = "";
+        savePath = "_";
     }
     if(error == NO_ERROR){
         stringstream *str = new stringstream();
@@ -737,13 +778,35 @@ void __fastcall TformPrincipal::botonEjecutarClick(TObject *Sender)
         *str << " ";
         *str << pulseSheetPath;
         *str << " ";
-        *str << nSamples;
-        *str << " ";
         *str << configPath;
         *str << " ";
+        *str << formPrincipal->campoMuestrasPorSegundo->Text.c_str();
+        *str << " ";
+        *str << getKPC();
+        *str << " ";
+        *str << getOpMode();
+        *str << " ";
+        *str << formPrincipal->campoDDSFrecuencia1->Text.c_str();
+        *str << " ";
+        *str << formPrincipal->campoDDSFrecuencia2->Text.c_str();
+        *str << " ";
         *str << savePath;
+        *str << " ";
+        *str << formPrincipal->Repeticiones->Text.c_str();
         ShowMessage(str->str().c_str());
-//        system(str->str().c_str());
+        error = system(str->str().c_str());
+        error = system(str->str().c_str());
+        error = system(str->str().c_str());
+        error = system(str->str().c_str());
+        error = system(str->str().c_str());
+        error = system(str->str().c_str());
+        error = system(str->str().c_str());
+        if(error != NO_ERROR){
+            ShowMessage(getMessage(error));
+        }else{
+            ShowMessage("OK");
+        }
+
     }
 }
 

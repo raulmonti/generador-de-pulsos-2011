@@ -10,7 +10,6 @@
 #include <ExtCtrls.hpp>
 #include <Grids.hpp>
 #include <Dialogs.hpp>
-#include "TDLPortIO.h"
 #include <ComCtrls.hpp>
 //---------------------------------------------------------------------------
 class TformPrincipal : public TForm

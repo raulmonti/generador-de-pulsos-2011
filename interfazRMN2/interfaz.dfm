@@ -1,8 +1,8 @@
 object formPrincipal: TformPrincipal
-  Left = 294
-  Top = 106
-  Width = 806
-  Height = 571
+  Left = 73
+  Top = 137
+  Width = 789
+  Height = 550
   Caption = 'Controlador RMN'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
