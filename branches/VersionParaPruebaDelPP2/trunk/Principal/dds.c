@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <assert.h>
 #include "lpt_windows.h"
+#include "f_glist.h"
 
-unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_value);    
+unsigned int dds_load_ram_phase(unsigned char mem_address, float phase_value);    
 
 unsigned int activate_ram_write (void){
 
@@ -24,14 +25,17 @@ unsigned int desactivate_ram_write (void){
 
 
 
-unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_value){
+unsigned int dds_load_ram_phase(unsigned char mem_address, float phase_value){
 
     unsigned char add = 1, value = 0;
+    int cos = 0;
     
-    phase_value = phase_value % 360;           //Para que el valor sea 'real'  
-    value = 45.508 * phase_value;  // convertimos a valor de 14bits
+    cos = (360*45.508);
+    phase_value = 45.508 * phase_value;
+    value = ((int)phase_value) % cos;           
+   
     
-/*    printf("LSB del valor de la fase: %X\n", value);*/
+    printf("LSB del valor de la fase: %X\n", (int)value/45.508);
 
 //printf("DEBUG:                Dir: %X  phase %X:\n", mem_address, phase_value);
 //printf("DEBUG:                LSB: %X  MSB %X:\n", (unsigned char)phase_value, phase_value>>8);
@@ -43,11 +47,11 @@ unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_va
     direccion(RAM_REG_COM1);
     escritura(mem_address+add);
     direccion(RAM_REG_WRITE);
-    value = phase_value>>8; 
+    value = (int)phase_value>>8; 
     escritura(value);              //MSB
     
 
-/*    printf("MSB del valor de la fase: %X\n",value);*/
+    printf("MSB del valor de la fase: %X\n",value/45.508);
     
     return 0;
     
@@ -55,7 +59,9 @@ unsigned int dds_load_ram_phase(unsigned char mem_address, unsigned int phase_va
 
 
 
-/* Cambiar a CHAR el campo data de 'lpt_send_byte' */
+/******************************************************************************/
+
+
 bool dds_set_address(unsigned char address){
     bool result = true;
     
@@ -83,6 +89,8 @@ bool dds_set_address(unsigned char address){
 
 }
 
+
+/******************************************************************************/
 
 
 bool dds_write(unsigned char data){
@@ -114,6 +122,8 @@ bool dds_write(unsigned char data){
    
 }
 
+
+/******************************************************************************/
 
 
 bool dds_send_word(unsigned int word){
@@ -148,6 +158,10 @@ bool dds_send_word(unsigned int word){
   return result;
 
 }
+
+
+/******************************************************************************/
+
 
 void dds_set_freq(long double frec_1, long double frec_2){
      long double calculo = 0;
@@ -465,13 +479,48 @@ bool dds_load_phases_ram(instruction_sheet inst_sheet, unsigned int shift){
                      n = 0,
                      m = 0,
                      phase_value = 0,
-                     next_base_address = 0;             
+                     next_address = 0;             
         phase p = NULL;
         bool result = true;
-        
+        f_glist phases = f_glist_create ();
+        float f = 0;
+        int i = 0, j = 0;
+
         assert(inst_sheet != NULL);
         
         count_phases = instruction_sheet_phase_count(inst_sheet);
+
+        /* Primero armo la lista con todas los valores de fase que poseo: */
+        for(i = 0; i < count_phases; i++){
+            p = instruction_sheet_get_nth_phase(inst_sheet, n);
+            for(j = 0; j < phase_count_values(p); j++){
+                f = phase_nth_value(p,j);
+                if(f_glist_find(phases, f) < 0)    
+                    f_glist_add(phases, f);
+            }
+        }
+
+        /* Ahora guardo cada uno de esos valores en la RAM: */
+
+        for(i = 0; i < f_glist_length(phases); i++){
+            dds_load_ram_phase(next_address, f_glist_nth(phases, i));
+            next_address += 2;
+        }
+
+        /* Por último actualizamos cada phase con la posicion de sus valores 
+        /* en la ram: */
+
+        for(i = 0; i < count_phases; i++){
+            p = instruction_sheet_get_nth_phase(inst_sheet, n);
+            for(j = 0; j < phase_count_values(p); j++){
+                f = phase_nth_value(p,j);
+                assert( -1 != f_glist_find(phases,f));
+                phase_set_address(p,j,2*f_glist_find(phases,f));
+            }
+
+        
+
+
         if (count_phases > RAM_SPACE_SIZE) result = false;
         else{
             activate_ram_write();          //Modo escritura de RAM  

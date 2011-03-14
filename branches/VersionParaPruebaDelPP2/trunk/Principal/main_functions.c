@@ -146,10 +146,8 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
 
     ad = ad_destroy(ad);
     inst_sheet = instruction_sheet_destroy(inst_sheet);   
-    
-    printf("\n>>>  TERMINANDO EL PROGRAMA CON RESULT = %i  <<<\n",result);   
-    return 0;        
 
+    return 0;        
 }
 
 
