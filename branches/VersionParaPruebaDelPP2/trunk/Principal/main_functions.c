@@ -104,7 +104,7 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
     dds_config();
     
     /****************CONFIGURACION DEL A/D****************//*LISTOOOOOO*/
-    ad = ad_config(mps, kpc, AD_MODO_CONTINUO);
+    ad = ad_config(mps, kpc, AD_MODO_CONTINUO);/*arreglar lo del MODO*/
 
     /****************CARGA DE FRECUENCIAS DEL DDS****************//*LISTOOOOOO*/
     dds_set_freq(frec1, frec2); /* frec1 y frec2 deseadas = 5MHz */
@@ -150,4 +150,18 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
     printf("\n>>>  TERMINANDO EL PROGRAMA CON RESULT = %i  <<<\n",result);   
     return 0;        
 
+}
+
+
+void main_dds_enable(void){
+    dds_enable();
+}
+
+
+void main_dds_disable(void){
+    dds_disable();
+}
+
+void main_dds_reset(void){
+    dds_reset();
 }

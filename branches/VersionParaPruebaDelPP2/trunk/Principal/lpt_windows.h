@@ -18,7 +18,7 @@
     * 		  En caso de error los codigos son: 0 = ok
     * 		  				   1 = Puerto ocupado*****/
 
-unsigned int lpt_send_byte(unsigned int port_addr, unsigned int data);
+unsigned int lpt_send_byte(unsigned int port_addr, unsigned char data);
 
 /****Toma los datos del buffer de recepcion
     *Requiere: Nada
@@ -26,7 +26,7 @@ unsigned int lpt_send_byte(unsigned int port_addr, unsigned int data);
     *Retorna: Los datos guardados en el buffer de recepcion o 1 en caso que el 
     * 		  puerto este ocupado. 		  
 *****/
-unsigned int lpt_recive_byte(unsigned int port_addr);
+unsigned char lpt_recive_byte(unsigned int port_addr);
 
 /****Checkea si el puerto ubicado en la direccion port_addr esta disponible
     *Requiere: Nada
