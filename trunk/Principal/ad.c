@@ -297,7 +297,7 @@ void ad_to_file(ad_t ad, char *output_file){
     output_ad = fopen(file, "w");
     assert(ad->canala != NULL && ad->canalb != NULL);
     for(i = 0; i < ad->kpc*1024; i++){
-          fprintf(output_ad, "canala %i\tcanalb %i\n" , ad->canala[i], ad->canala[i]);
+          fprintf(output_ad, "%i\t%i\n" , ad->canala[i], ad->canala[i]);
     }
 
     fprintf(output_ad, "\n\t\t<< Fin de la muestra >>\n");

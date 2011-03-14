@@ -7,18 +7,22 @@
 #include "phase.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "f_glist.h"
+#include <glib/glist.h>
 #include <assert.h>
 
 #define DEBUG_ON
 #define RAM_RANGE 16 /* Espacio de ram: 0   phase_value = phase_nth_value(p, m); .. RAM_RANGE - 1 */	
 	
+struct t_cell{
+    float value;
+    int ram_addr;
+};
 
+typedef struct t_cell *cell;
 
 struct t_phase {
     unsigned int id;
-    f_glist values;
-	unsigned int baseAddr;
+    GList *values;
 };
 
 
@@ -29,7 +33,7 @@ phase phase_create(unsigned int id){
     result = calloc(1,sizeof(struct t_phase));
     if (result != NULL){
         result->id = id;
-        result->values = f_glist_create();
+        result->values = NULL;
     }
 #ifdef DEBUG__ON    
     else{
@@ -43,9 +47,13 @@ phase phase_create(unsigned int id){
 
 
 phase phase_destroy(phase p){
-
+    
+    unsigned int i = 0;
     assert(p != NULL);
-    p->values = f_glist_destroy(p->values);
+    for(i = 0; i < g_list_length(p->values); i++){
+        free(g_list_nth(p->values, i));
+    }
+    p->values = g_list_destroy(p->values);
     free(p);
     p = NULL;
     
@@ -65,9 +73,17 @@ unsigned int phase_id (phase p){
  * lista de valores posibles para la fase p
  */
 void phase_add_value(phase p, float degrees){
+
+    cell value = NULL;
     
     assert(p != NULL);
-    f_glist_add (p->values, degrees);
+
+    value = calloc(1, sizeof(struct t_cell));
+    assert(value != NULL);
+    value->value = degrees;
+    value->ram_addr = -1;
+
+    glist_append (p->values, value);
 
 }
 
@@ -79,28 +95,31 @@ void phase_add_value(phase p, float degrees){
 float phase_next_value(phase p){
 
     assert(p!=NULL);
-    return f_glist_next(p->values); 
+    return ((cell)g_list_next(p->values))->value; 
 }
 
 void phase_print (phase p, int times){
-    
+
+    unsigned int i = 0;    
     assert(p!=NULL);
-    printf("Phase%u:\n", p->id);
-    f_glist_print(p->values, times);
+    printf("\nPhase%u:\n", p->id);
+    printf("[");
+    for(i = 0; i < g_list_length(p->values)-1; i++)
+        printf(" %f,",((cell)g_list_nth(p->values,i))->value);
+    printf("%f]\n",g_list_nth(p->values,g_list_length(p->values)));
 
 }
 
 
-	
-void phase_set_base_address(phase p, unsigned int baseAddress){
 
-    /* PRE: */
+void phase_set_address (phase p, unsigned int shift, unsigned int addr){
+
     assert(p != NULL);
-	assert(baseAddress < RAM_RANGE);
+	assert(shift <= g_list_length(p->values));
 	
-	p->baseAddr = baseAddress;
-
+	((cell)g_list_nth(p->values,shift))->ram_addr = addr;
 }
+
 
 unsigned int phase_get_mem_address(phase p, unsigned int shift){
 	unsigned int result = 0,
@@ -111,14 +130,13 @@ unsigned int phase_get_mem_address(phase p, unsigned int shift){
 	assert(p != NULL);
 	/* Desde 0 <= shift < N° of Samples */
 	
-	len = f_glist_length(p->values);
+	len = g_list_length(p->values);
 	assert(len != 0);
 	
 	index = shift % len;
-	result = p->baseAddr + index*2;
+	result = ((cell)g_list_nth(p->values, index))->ram_addr;
 	
-	return result;
-	
+	return result;	
 }
 
 /*
@@ -146,13 +164,12 @@ iteración--;
 
 unsigned int phase_count_values(phase p){
 	assert(p != NULL);
-	return f_glist_length(p->values);
+	return g_list_length(p->values);
 }
 
-/*REVISAR!!!!!!!!!!!!!!!*/
-unsigned int phase_nth_value(phase p, unsigned int n){
+
+float phase_nth_value(phase p, unsigned int n){
 	assert(p != NULL);
 	n = n % phase_count_values(p);
-	/*printf("%u \n%X\n",n,f_glist_nth(p->values, n));*/
-	return f_glist_nth(p->values, n);
+	return ((cell)g_list_nth(p->values, n))->value;
 }

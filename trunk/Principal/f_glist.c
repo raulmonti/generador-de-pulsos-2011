@@ -43,7 +43,7 @@ f_glist f_glist_destroy (f_glist fl){
 }
 
 
-void f_glist_add (f_glist fl, unsigned int f){
+void f_glist_add (f_glist fl, float f){
  
     cell c = NULL;
     
@@ -55,9 +55,9 @@ void f_glist_add (f_glist fl, unsigned int f){
         
    
 
-unsigned int f_glist_next (f_glist fl){
+float f_glist_next (f_glist fl){
     
-    unsigned int result = 0;
+    float result = 0;
     glist aux = NULL;
     
     assert(fl != NULL);
@@ -85,7 +85,7 @@ int f_glist_length (f_glist fl){
 }
 
 
-unsigned int f_glist_nth(f_glist fl, unsigned int n){
+float f_glist_nth(f_glist fl, unsigned int n){
 
 	assert(fl != NULL);
 	assert(f_glist_length(fl) > (int)n);
@@ -98,18 +98,28 @@ void f_glist_print (f_glist fl, int times){
     int i = 0, j = 0, len = 0;
     
     len = f_glist_length(fl);
-  /*  printf("Se imprime %i veces la lista de longitud %i:\n", times, len);*/
-    
+     
     for(i = 0; i < times; i++){
         printf("[ ");
         for( j = 0; j < len; j++){
-            printf("%u ", f_glist_next(fl));
+            printf("%f ", f_glist_next(fl));
         }
         printf("]\n");
     }
 }
 
+/* Devuelve la posicion de la primera coincidencia con f o -1 si no se 
+/* encuentra el valor. */
+int f_glist_find (f_glist fl, float f){
 
-
+    int i = 0, cota = 0;
+    cota = g_list_length(fl->list);
+    while(i < cota){
+        if ((cell)g_list_nth(fl,i))->value == f)
+            return i;
+        i++;
+    }
+    return -1;
+}
 
 

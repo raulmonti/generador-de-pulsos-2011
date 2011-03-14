@@ -38,6 +38,6 @@ unsigned int phase_get_mem_address(phase p, unsigned int shift);
 unsigned int phase_count_values(phase p);
 
 /*REVISAR!!!!!!!!!!!!!!!*/
-unsigned int phase_nth_value(phase p, unsigned int n);
+float phase_nth_value(phase p, unsigned int n);
 
 #endif
