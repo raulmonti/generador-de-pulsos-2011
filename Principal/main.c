@@ -11,29 +11,29 @@ int main ( int argc, char *argv[]){
 
     if(argv[1] == NULL){
         printf("Faltan argumentos para correr el programa\n");
-        return 1;
+        return 7;
     }
 
     if(!strcmp(argv[1],"mainParsePulseProgram")){
 
         if(argv[2]==NULL || argv[3]==NULL || argv[4]==NULL){
             printf("Faltan argumetos para mainParsePulseProgram\n");
-            return 1;
+            return 3;
         }        
         main_parse_pulse_program (argv[2], argv[3], argv[4]);
 
     }else if(!strcmp(argv[1],"mainRun")){
 
-     /*   if(argv[1]==NULL || argv[2]==NULL || argv[3]==NULL || argv[4]==NULL ||
+        if(argv[10]==NULL || argv[2]==NULL || argv[3]==NULL || argv[4]==NULL ||
            argv[5]==NULL || argv[6]==NULL || argv[7]==NULL || argv[8]==NULL ||
            argv[9]==NULL){
             printf("Faltan argumetos para mainRun\n");
-            return 1;
+            return 5;
         }
-        result = main_run (argv[1], argv[2], argv[3], argv[4], argv[5], argv[6],
-                           argv[7], argv[8], argv[9]);*/
-        result = main_run ("sintaxis_ejemplo", "config_conf", 1000000, 1, AD_MODO_CONTINUO, 5000000,
-                           5000000, "probando", 10);
+        result = main_run (argv[2], argv[3], atoi(argv[4]), atoi(argv[5]), atoi(argv[6]),
+                           atoi(argv[7]), atoi(argv[8]), argv[9], atoi(argv[10]));
+       /* result = main_run ("sintaxis_ejemplo", "config_conf", 1000000, 1, AD_MODO_CONTINUO, 5000000,
+                           5000000, "probando", 10);*/
 
     }else if(!strcmp(argv[1],"mainDDSEnable")){
 
@@ -54,6 +54,6 @@ int main ( int argc, char *argv[]){
 
     } 
 
-    printf("\n>>>  TERMINANDO EL PROGRAMA CON RESULT = %i  <<<\n",result);   
-    return 0;        
+   // printf("\n>>>  TERMINANDO EL PROGRAMA CON RESULT = %i  <<<\n",result);   
+    return result;        
 }

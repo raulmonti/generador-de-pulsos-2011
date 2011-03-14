@@ -417,7 +417,7 @@ unsigned int pp2_load_program (instruction_sheet is){
 
     if(pp2_transfer_instruction() || result) return 1;  
     
-    printf("Termino la carga del programa con result = %u\n",result);
+    //printf("Termino la carga del programa con result = %u\n",result);
 
     return result;
 }

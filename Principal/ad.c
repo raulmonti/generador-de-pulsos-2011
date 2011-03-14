@@ -171,11 +171,11 @@ unsigned int ad_adquirir(ad_t ad){
         result = startLeer();    
     if (!result){
         do{
-            //printf("ENTRA\n");
+            printf("ENTRA\n");
             b=leer();
         }while(!(b&0x01));
         result = endLeer();
-        printf("leyo b = %u\n",b);
+       // printf("leyo b = %u\n",b);
      }
     ad->adq_count++;    
           
