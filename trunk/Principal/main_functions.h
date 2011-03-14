@@ -23,4 +23,10 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
                        unsigned int frec2, char *ad_output, int times );
 
 
+void main_dds_enable(void);
+
+void main_dds_disable(void);
+
+void main_dds_reset(void);
+
 #endif

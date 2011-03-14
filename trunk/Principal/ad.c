@@ -11,8 +11,8 @@ struct t_ad{
     unsigned char conf; //configuracion actual del ad
     unsigned int modo;  //modulado o continuo
     unsigned int kpc;   //Kbytes de adquisicion por ciclo
-    unsigned short *canala;
-    unsigned short *canalb;
+    unsigned int *canala;
+    unsigned int *canalb;
     unsigned int adq_count;
 };
 
@@ -104,8 +104,8 @@ ad_t ad_config (unsigned int mps, unsigned int kpc, unsigned int adqm){
         result = 1;
     }
     
-    ad->canala = calloc(1, sizeof(short)*kpc*1024);
-    ad->canalb = calloc(1, sizeof(short)*kpc*1024);    
+    ad->canala = calloc(kpc*1024, sizeof(int));
+    ad->canalb = calloc(kpc*1024, sizeof(int));    
     ad->kpc = kpc;
 
     if(!result)
@@ -191,12 +191,12 @@ unsigned int ad_adquirir(ad_t ad){
 
 bool ad_leer_buffers(ad_t ad){
     
-    unsigned int i = 0, result = 0;
-    char *canal_a = NULL, *canal_b = NULL, *canal_ab = NULL,  aux = 0;
+    unsigned int i = 0, result = 0, punto = 0, h = 0;
+    unsigned char *canal_a = NULL, *canal_b = NULL, *canal_ab = NULL,  aux = 0;
     
-    canal_a = calloc(1, sizeof(char)*ad->kpc*1024);
-    canal_b = calloc(1, sizeof(char)*ad->kpc*1024);
-    canal_ab = calloc(1, sizeof(char)*ad->kpc*1024);    
+    canal_a = malloc(sizeof(unsigned char)*ad->kpc*1024);
+    canal_b = malloc(sizeof(unsigned char)*ad->kpc*1024);
+    canal_ab = malloc(sizeof(unsigned char)*ad->kpc*1024);
   
     ad_resetear_contador(ad);
     ad_set_modo_pc(ad);
@@ -210,7 +210,6 @@ bool ad_leer_buffers(ad_t ad){
     ad_resetear_contador(ad);
     ad_set_modo_pc(ad);
 
-
     direccion(0x09);                            /* direccion registro de datos */
     startLeer();                                /* bus de datos entrada */
     for(i=0; i<(ad->kpc*1024); i++)
@@ -223,7 +222,8 @@ bool ad_leer_buffers(ad_t ad){
     direccion(0x0a);                            /* direccion registro de datos */
     startLeer();                                /* bus de datos entrada */
     for(i=0; i<(ad->kpc*1024); i++)
-        canal_a[i]=leer();                       /* leeyendo los datos */
+        canal_a[i] = leer();  /* leeyendo los datos */
+
     endLeer();                                  /* bus de datos salida */
    
     ad_resetear_contador(ad);
@@ -231,16 +231,24 @@ bool ad_leer_buffers(ad_t ad){
     /* Construyo el resultado final A ab B -> Aa bB*/
 
     for(i = 0; i<(ad->kpc*1024);i++){
+        punto = 0;
+        punto = (canal_ab[i]/16)&0x0f;
+        punto= punto+canal_a[i]*16;
+        ad->canala[i]= punto;
+        /*ad->canala[i] = 0;
         ad->canala[i] = (canal_ab[i]/16)&0x0f;
-        ad->canala[i] += canal_a[i]*16;
+        ad->canala[i] += canal_a[i]*16;*/
     }
-    
 
     for(i = 0; i<(ad->kpc*1024);i++){
+        punto= canal_ab[i]&0x0f;
+        punto= punto+canal_b[i]*16;
+        ad->canalb[i]=punto;
+        /*ad->canalb[i] = 0;
         ad->canalb[i] = canal_b[i];
         ad->canalb[i] = ad->canalb[i]<<4;
         aux = canal_ab[i]&0x0f;
-        ad->canalb[i] = ad->canalb[i] | aux;
+        ad->canalb[i] = ad->canalb[i] | aux;*/
     }
 
     free(canal_a);
@@ -263,7 +271,8 @@ void ad_to_file(ad_t ad, char *output_file){
     char adq_count[4];
     char file[150];
     char dateTime[200];
-    
+    char canalabuff[32] = {0};
+    char canalbbuff[32] = {0};    
     
 
     time_t tiempo = time(0);
@@ -288,7 +297,7 @@ void ad_to_file(ad_t ad, char *output_file){
     output_ad = fopen(file, "w");
     assert(ad->canala != NULL && ad->canalb != NULL);
     for(i = 0; i < ad->kpc*1024; i++){
-          fprintf(output_ad, "canala %i\tcanalb %i\n" , ad->canala[i], ad->canalb[i]);
+          fprintf(output_ad, "canala %i\tcanalb %i\n" , ad->canala[i], ad->canala[i]);
     }
 
     fprintf(output_ad, "\n\t\t<< Fin de la muestra >>\n");

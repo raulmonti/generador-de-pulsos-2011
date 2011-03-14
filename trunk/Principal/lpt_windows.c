@@ -22,7 +22,7 @@ void delay4(unsigned int n)
 }
 
 
-unsigned int lpt_send_byte(unsigned int port_addr, unsigned int data){
+unsigned int lpt_send_byte(unsigned int port_addr, unsigned char data){
  	unsigned int status = _inp(port_addr+1);
 	unsigned int result = 0;
 	if (status == PORT_BUSY){
@@ -33,9 +33,9 @@ unsigned int lpt_send_byte(unsigned int port_addr, unsigned int data){
 	return result;
 }
 
-unsigned int lpt_recive_byte(unsigned int port_addr){
+unsigned char lpt_recive_byte(unsigned int port_addr){
 	unsigned int status = _inp(port_addr+1);
-	unsigned int result = 0;
+	unsigned char result = 0;
 	if (status == PORT_BUSY){
 		result = 1;
 	}else{
@@ -132,8 +132,12 @@ unsigned int endLeer(void) {
 
     result = lpt_send_byte(LPT_CONTROL, 0x24);/* bus lpt = entrada */
 
+    delayN(3);
+
     if (!result)
         result = lpt_send_byte(LPT_CONTROL, 0x04);
+
+    delayN(3);
     
     return result;
 }
@@ -147,6 +151,8 @@ unsigned int startLeer(void) {
 
     result = lpt_send_byte(LPT_CONTROL, 0x24); /* bus lpt = entrada */
     
+    delayN(3);
+
     return result;
 
 }
@@ -160,11 +166,15 @@ unsigned char leer(void)   /*** leer un byte en la direccion corriente ***/
 
     result = lpt_send_byte(LPT_CONTROL, 0x21) == 0; /* bus inter_p = salida + RD */
 
+    delayN(30);
+
     if(result)
         dto = lpt_recive_byte(LPT_DATA);
 
     if(result)
         lpt_send_byte(LPT_CONTROL, 0x24);
+
+    delayN(100);
 
     return(dto);
 
