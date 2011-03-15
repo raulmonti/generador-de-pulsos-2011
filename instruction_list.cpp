@@ -12,7 +12,7 @@ struct t_inst_list{
 instruction_list instruction_list_create (void){
 	instruction_list il = NULL;
         
-    il = calloc(1, sizeof(struct t_inst_list));
+    il = (instruction_list)calloc(1, sizeof(struct t_inst_list));
     assert(il != NULL);
 	il->count = 0;
     return il;
@@ -24,7 +24,7 @@ instruction_list instruction_list_destroy (instruction_list il){
     assert(il != NULL);
     
     for(i = 0; i < g_list_length(il->list); i++){
-        instruction_destroy(g_list_nth_data(il->list,i));
+        instruction_destroy((instruction)g_list_nth_data(il->list,i));
     }   
     g_list_free(il->list);
     free(il);
@@ -52,7 +52,7 @@ void instruction_list_print (instruction_list il, unsigned int times){
 		
 	for(i=0; i < times; i++){
 		for(j=0; j<il->count; j++){
-			instruction_print(g_list_nth_data(il->list, j));
+			instruction_print((instruction)g_list_nth_data(il->list, j));
 		}
 	}
 }
@@ -60,7 +60,7 @@ void instruction_list_print (instruction_list il, unsigned int times){
 instruction instruction_list_nth_item(instruction_list il, unsigned int n){
 	assert(il != NULL);
 	
-	return g_list_nth_data(il->list, n);
+	return (instruction)g_list_nth_data(il->list, n);
 }
 
 

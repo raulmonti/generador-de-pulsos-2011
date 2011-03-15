@@ -10,6 +10,7 @@
 #include "parser.h"
 #include <math.h>
 #include "ad.h"
+#include <string.h>
 
 /*
  * Recibe la direccion de la hoja de pulsos en 'pulse_sheet', la parsea(1), y 

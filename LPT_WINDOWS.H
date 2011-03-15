@@ -1,7 +1,7 @@
 #ifndef _LPT_H_
 #define _LPT_H_
 
-#include "stdbool.h"
+
 
 #define LPT1 0x378
 #define LPT2 0x278
@@ -41,6 +41,9 @@ bool lpt_is_busy(unsigned int port_addr);
 
 /*************************************************************************/
 
+void delayN(unsigned int n);
+
+void delay4(unsigned int n);
 
 unsigned int direccion(unsigned char address);  /* escribe una direccion en el latch address */
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <glib/glist.h>
+//#include <glib/glist.h>
+#include "glistCPP.h"
 #include "f_glist.h"
 #include <assert.h>
 #include <stdlib.h>
@@ -19,7 +20,7 @@ struct t_f_glist{
 
 f_glist f_glist_create (void){
     f_glist fl = NULL;
-    fl = calloc(1,sizeof(struct t_f_glist));
+    fl = (f_glist)calloc(1,sizeof(struct t_f_glist));
     assert(fl != NULL);
    
     return fl;
@@ -47,7 +48,7 @@ void f_glist_add (f_glist fl, unsigned int f){
  
     cell c = NULL;
     
-    c = calloc(1, sizeof(struct t_cell));
+    c = (cell)calloc(1, sizeof(struct t_cell));
     c->value = f;
     fl->list = g_list_append(fl->list,c);
 }

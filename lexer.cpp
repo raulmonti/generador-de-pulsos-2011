@@ -67,7 +67,7 @@ Lexer *lexer_new (FILE *f) {
 	/* Precondiciones */
 	assert (f != NULL);
 	
-	result = calloc (1, sizeof (*result));
+	result = (Lexer *)calloc (1, sizeof (*result));
 	assert (result != NULL);
 	
 	result->input      = f;

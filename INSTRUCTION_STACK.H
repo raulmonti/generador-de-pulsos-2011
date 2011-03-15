@@ -1,7 +1,6 @@
 #ifndef _INSTRUCTION_STACK_H_
 #define _INSTRUCTION_STACK_H_
 
-#include "stdbool.h"
 #include "instruction.h"
 
 typedef struct instruction_stack_s* instruction_stack;

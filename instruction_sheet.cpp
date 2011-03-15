@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include "interface.h"
+#include <glib/glist.h>
 
 struct inst_sheet_s {
     GList* instruction_list;
@@ -22,7 +24,7 @@ instruction_list repeat_insts(instruction_list list, unsigned int n_times);
 
 
 instruction_sheet instruction_sheet_create(void){
-    instruction_sheet inst_sheet = calloc(1, sizeof(struct inst_sheet_s));
+    instruction_sheet inst_sheet = (instruction_sheet)calloc(1, sizeof(struct inst_sheet_s));
     inst_sheet->instruction_list = NULL;
     inst_sheet->current_inst = NULL;
     inst_sheet->current_phase = NULL;
@@ -41,13 +43,13 @@ instruction_sheet instruction_sheet_destroy(instruction_sheet inst_sheet){
     if (inst_sheet != NULL){
     
         for(i = 0; i < g_list_length(inst_sheet->instruction_list); i++){
-            instruction_destroy(g_list_nth_data(inst_sheet->instruction_list,i));
+            instruction_destroy((instruction)g_list_nth_data(inst_sheet->instruction_list,i));
         }
     
         g_list_free(inst_sheet->instruction_list);
 
         for(i = 0; i < g_list_length(inst_sheet->phase_list); i++){
-            phase_destroy(g_list_nth_data(inst_sheet->phase_list,i));
+            phase_destroy((phase)g_list_nth_data(inst_sheet->phase_list,i));
         }
         
         g_list_free(inst_sheet->phase_list);
@@ -85,7 +87,7 @@ void instruction_sheet_print(instruction_sheet inst_sheet){
 			printf("C_I -> NULL\n");
 		}
         while(i<g_list_length(inst_sheet->instruction_list)){
-        	inst = g_list_nth_data(inst_sheet->instruction_list, i);
+        	inst = (instruction)g_list_nth_data(inst_sheet->instruction_list, i);
         	if(inst_sheet->current_inst){
 				if(inst == (inst_sheet->current_inst)->data){
 					printf("C_I ->");
@@ -96,7 +98,7 @@ void instruction_sheet_print(instruction_sheet inst_sheet){
         }
         i = 0;
         while(i<g_list_length(inst_sheet->phase_list)){
-            phase_print(g_list_nth_data(inst_sheet->phase_list, i), 1);
+            phase_print((phase)g_list_nth_data(inst_sheet->phase_list, i), 1);
             i++;
         }
     }
@@ -107,7 +109,7 @@ instruction instruction_sheet_get_nth_instruction(instruction_sheet inst_sheet, 
 	
 	assert(inst_sheet != NULL);
 	
-	result = g_list_nth_data(inst_sheet->instruction_list, n);
+	result = (instruction)g_list_nth_data(inst_sheet->instruction_list, n);
 	
 	return result;
 }
@@ -177,7 +179,7 @@ void instruction_sheet_delete_nth_instruction(instruction_sheet inst_sheet, unsi
 	
 	l_aux = g_list_nth(inst_sheet->instruction_list, n);
 	inst_sheet->instruction_list = g_list_remove(inst_sheet->instruction_list, l_aux);
-	inst = g_list_nth_data(l_aux, 0);
+	inst = (instruction)g_list_nth_data(l_aux, 0);
 	inst = instruction_destroy(inst);
 	g_list_free(l_aux);
 }
@@ -198,7 +200,7 @@ unsigned int instruction_sheet_remove_instructions
 	for(i = from; i <= to; i++){
 			inst_list = g_list_nth(is->instruction_list, from);
 			is->instruction_list = g_list_remove_link(is->instruction_list, inst_list);
-			inst_list->data = instruction_destroy(inst_list->data);
+			inst_list->data = instruction_destroy((instruction)inst_list->data);
 			g_list_free(inst_list);
 	} 
 			
@@ -214,7 +216,7 @@ unsigned int instruction_sheet_insert_instructions
        length = g_list_length(instructions);
        
        for(i = 0; i < length; i++){
-           pointer = g_list_nth_data(instructions, i);
+           pointer = (instruction)g_list_nth_data(instructions, i);
            is->instruction_list = g_list_insert(is->instruction_list, pointer, from+i);        
        }
        
@@ -248,7 +250,7 @@ instruction instruction_sheet_get_current_instruction(instruction_sheet is){
 	assert(is != NULL);
 	
 	if(is->current_inst != NULL){
-		result = (is->current_inst)->data;
+		result =(instruction)(is->current_inst)->data;
 	}
 	
 	return result;
@@ -298,7 +300,7 @@ phase instruction_sheet_get_nth_phase(instruction_sheet inst_sheet, unsigned int
 	
 	assert(inst_sheet != NULL);
 	
-	result = g_list_nth_data(inst_sheet->phase_list, n);
+	result = (phase)g_list_nth_data(inst_sheet->phase_list, n);
 	
 	return result;
 }
@@ -330,7 +332,7 @@ phase instruction_sheet_get_phase(instruction_sheet inst_sheet, unsigned int id)
     
     
     for(i = 0; i < cota; i++){
-        p = g_list_nth_data(inst_sheet->phase_list, i);
+        p = (phase)g_list_nth_data(inst_sheet->phase_list, i);
         if(phase_id(p) == id) 
             result = p;
     }

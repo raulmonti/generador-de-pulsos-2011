@@ -34,7 +34,7 @@ ad_t ad_create(void){
     
     ad_t ad = NULL;
 
-    ad = calloc(1,sizeof(struct t_ad));
+    ad = (ad_t)calloc(1,sizeof(struct t_ad));
     assert(ad!=NULL);
     ad->conf = 0x00;
     ad->modo = AD_MODO_MODULADO;
@@ -50,7 +50,7 @@ ad_t ad_destroy(ad_t ad){
 
 ad_t ad_config (unsigned int mps, unsigned int kpc, unsigned int adqm){
 
-    bool result = false;  
+    bool result = false;
     unsigned char N = 0;
     ad_t ad = NULL;
 
@@ -59,7 +59,7 @@ ad_t ad_config (unsigned int mps, unsigned int kpc, unsigned int adqm){
 
     /* Modo PC para configurarlo */
     ad_set_modo_pc(ad);
-    
+
     /* Configuracion de la cantidad de muestras por segundo. */
 
     if(mps < 10000000 && mps > 39215){
@@ -73,19 +73,19 @@ ad_t ad_config (unsigned int mps, unsigned int kpc, unsigned int adqm){
         if(!result)
             result = escritura(0x00);
     }else {
-        printf("Error en la cantidad de muestras por segundo\n");        
+        printf("Error en la cantidad de muestras por segundo\n");
         return NULL;
     }
-        
+
     assert(kpc==1 || kpc==2 || kpc==4 || kpc==8 || kpc==16 || kpc==32 || kpc==64);
-        
+
     /* modo continuo -> b1 = 1. Modo modulado -> b1 = 0 */
     if(adqm == AD_MODO_CONTINUO){
         ad->conf = ad->conf | 0x02;
         ad->modo = AD_MODO_CONTINUO;
-    }        
-        
-    /* Kpc = tamano del buffer de adquisicion en Kb: */    
+    }
+
+    /* Kpc = tamano del buffer de adquisicion en Kb: */
     if(kpc==64){
             ad->conf = ad->conf|0x70;
     }else if(kpc==32){
@@ -103,9 +103,9 @@ ad_t ad_config (unsigned int mps, unsigned int kpc, unsigned int adqm){
     }else if(kpc != 0){
         result = 1;
     }
-    
-    ad->canala = calloc(kpc*1024, sizeof(int));
-    ad->canalb = calloc(kpc*1024, sizeof(int));    
+
+    ad->canala = (unsigned int *)calloc(kpc*1024, sizeof(int));
+    ad->canalb = (unsigned int *)calloc(kpc*1024, sizeof(int));
     ad->kpc = kpc;
 
     if(!result)
@@ -194,9 +194,9 @@ bool ad_leer_buffers(ad_t ad){
     unsigned int i = 0, result = 0, punto = 0, h = 0;
     unsigned char *canal_a = NULL, *canal_b = NULL, *canal_ab = NULL,  aux = 0;
     
-    canal_a = malloc(sizeof(unsigned char)*ad->kpc*1024);
-    canal_b = malloc(sizeof(unsigned char)*ad->kpc*1024);
-    canal_ab = malloc(sizeof(unsigned char)*ad->kpc*1024);
+    canal_a = (unsigned char *)malloc(sizeof(unsigned char)*ad->kpc*1024);
+    canal_b = (unsigned char *)malloc(sizeof(unsigned char)*ad->kpc*1024);
+    canal_ab = (unsigned char *)malloc(sizeof(unsigned char)*ad->kpc*1024);
   
     ad_resetear_contador(ad);
     ad_set_modo_pc(ad);

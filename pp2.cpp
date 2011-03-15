@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "lpt_windows.h"
+#include <stdio.h>
 /*#include "lpt_windows.h"*/
 
 /*Direcciones de los registros de trabajo*/

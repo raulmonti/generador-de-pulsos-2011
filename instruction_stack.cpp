@@ -1,5 +1,6 @@
 #include "instruction_stack.h"
-#include <glib/glist.h>
+//#include <glib/glist.h>
+#include "glistCPP.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -11,7 +12,7 @@ struct instruction_stack_s{
 
 instruction_stack instruction_stack_create(void){
 	instruction_stack result = NULL;
-	result = calloc(1, sizeof(struct instruction_stack_s));
+	result = (instruction_stack)calloc(1, sizeof(struct instruction_stack_s));
 	result->data = NULL;
 	result->count = 0;
 	
@@ -26,7 +27,7 @@ void instruction_stack_push(instruction_stack st, instruction inst){
 
 instruction instruction_stack_top(instruction_stack st){
 	assert(st != NULL);
-	return g_list_nth_data(st->data, 0);
+	return (instruction)g_list_nth_data(st->data, 0);
 }
 
 void instruction_stack_pop(instruction_stack st){
@@ -34,7 +35,7 @@ void instruction_stack_pop(instruction_stack st){
 	
 	assert(st != NULL);
 	
-	inst = g_list_nth_data(st->data, 0);
+	inst = (instruction)g_list_nth_data(st->data, 0);
 	st->data = g_list_remove(st->data, inst);
 	/*inst = instruction_destroy(inst);*/
 	st->count--;
@@ -46,7 +47,7 @@ instruction_stack instruction_stack_destroy(instruction_stack st){
 	assert(st != NULL);
 	
 	for(i=0;i<st->count;i++){
-		instruction_destroy(g_list_nth_data(st->data, i));
+		instruction_destroy((instruction)g_list_nth_data(st->data, i));
 	}
 	g_list_free(st->data);
 	free(st);
@@ -73,7 +74,7 @@ void instruction_stack_print(instruction_stack st){
 	assert(st != NULL);
 	
 	for(i=0;i<st->count;i++){
-		instruction_print(g_list_nth_data(st->data, i));
+		instruction_print((instruction)g_list_nth_data(st->data, i));
 	}
 }
 

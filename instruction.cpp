@@ -17,7 +17,7 @@ instruction instruction_create(unsigned int id, int t, int d){
 
 	instruction inst = NULL;
 
-	inst = calloc(1, sizeof(struct instruction_s));
+	inst = (instruction)calloc(1, sizeof(struct instruction_s));
     inst-> id = id;
     inst-> type = t;
     inst-> data = d;

@@ -4,6 +4,8 @@
 #define ENABLE_PORT 1
 #define DISABLE_PORT 0
 
+#include "interfaz.h"
+
 void delayN(unsigned int n);
 void delay4(unsigned int n);
 
@@ -23,29 +25,33 @@ void delay4(unsigned int n)
 
 
 unsigned int lpt_send_byte(unsigned int port_addr, unsigned char data){
- 	unsigned int status = _inp(port_addr+1);
+ 	unsigned int status;// = _inp(port_addr+1);
 	unsigned int result = 0;
+        status = formPrincipal->DLPortIO1->Port[port_addr+1];
 	if (status == PORT_BUSY){
 		result = 1;
 	}else{
-		_outp(port_addr, data);
+                formPrincipal->DLPortIO1->Port[port_addr] = data;
+	//	_outp(port_addr, data);
 	}
 	return result;
 }
 
 unsigned char lpt_recive_byte(unsigned int port_addr){
-	unsigned int status = _inp(port_addr+1);
+	unsigned int status;// = _inp(port_addr+1);
 	unsigned char result = 0;
+        status = formPrincipal->DLPortIO1->Port[port_addr+1];
 	if (status == PORT_BUSY){
 		result = 1;
 	}else{
-		result = _inp(port_addr);
+		result = formPrincipal->DLPortIO1->Port[port_addr];
 	}
 	return result;
 }
 
 bool lpt_is_busy(unsigned int port_addr){
-	unsigned int status = _inp(port_addr+1);
+	unsigned int status;// = _inp(port_addr+1);
+        status = formPrincipal->DLPortIO1->Port[port_addr+1];
 /*	printf("%u\n",(status == PORT_BUSY));*/
 	return (status == PORT_BUSY);
 }

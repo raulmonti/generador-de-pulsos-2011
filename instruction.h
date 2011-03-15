@@ -1,6 +1,5 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
-#include "stdbool.h"
 
 #define LOOP_INST_CODE 0
 #define ACQUIRE_INST_CODE 1

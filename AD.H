@@ -1,7 +1,7 @@
 #ifndef AD_H
 #define AD_H
 
-#include "stdbool.h"
+
 
 
 #define AD_MODO_MODULADO 0

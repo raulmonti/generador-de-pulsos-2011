@@ -1,7 +1,7 @@
 #ifndef _DDS_H
 #define _DDS_H
 
-#include "stdbool.h"
+
 #include "lpt_windows.h"
 #include "instruction_sheet.h"
 

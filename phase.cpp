@@ -26,7 +26,7 @@ phase phase_create(unsigned int id){
  
     phase result = NULL;
     
-    result = calloc(1,sizeof(struct t_phase));
+    result = (phase)calloc(1,sizeof(struct t_phase));
     if (result != NULL){
         result->id = id;
         result->values = f_glist_create();
