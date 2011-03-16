@@ -104,7 +104,7 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
     dds_config();
     
     /****************CONFIGURACION DEL A/D****************//*LISTOOOOOO*/
-    ad = ad_config(mps, kpc, AD_MODO_CONTINUO);/*arreglar lo del MODO*/
+    
 
     /****************CARGA DE FRECUENCIAS DEL DDS****************//*LISTOOOOOO*/
     dds_set_freq(frec1, frec2); /* frec1 y frec2 deseadas = 5MHz */
@@ -118,6 +118,7 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
 
     /*****************CARGAR EL PROGRAMA*******************/
     result = pp2_load_program (inst_sheet);
+    ad = ad_config(mps, kpc, AD_MODO_CONTINUO);/*arreglar lo del MODO*/
     if(result == 0){
         result = pp2_microprocessor_mode_enabled();
         if(result == 0){
@@ -125,8 +126,7 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
         }
     }else{
           printf("Error en la carga del programa\n");      
-    }
-    
+    } 
     result = ad_adquirir(ad);
     if(strcmp("",ad_output)){
         ad_to_file(ad, ad_output);
@@ -147,6 +147,8 @@ unsigned int main_run (char *pulse_sheet, char *delay_sheet, unsigned int mps,
     ad = ad_destroy(ad);
     inst_sheet = instruction_sheet_destroy(inst_sheet);   
     
+    system("Project1.exe");
+
     printf("\n>>>  TERMINANDO EL PROGRAMA CON RESULT = %i  <<<\n",result);   
     return 0;        
 

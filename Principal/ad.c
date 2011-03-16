@@ -113,6 +113,10 @@ ad_t ad_config (unsigned int mps, unsigned int kpc, unsigned int adqm){
     if(!result){
         result = escritura(ad->conf);
     } 
+
+    ad_resetear_contador(ad);
+    ad_set_modo_ad(ad);
+    
     return ad;
 }
 
@@ -162,8 +166,8 @@ unsigned int ad_adquirir(ad_t ad){
     //printf("ENTRA\n");
 
     //RERET Y MODO AD:
-    ad_resetear_contador(ad);
-    ad_set_modo_ad(ad);
+    //ad_resetear_contador(ad);
+    //ad_set_modo_ad(ad);
     
     if(!result)          
         result = direccion(0x0b);
@@ -227,6 +231,7 @@ bool ad_leer_buffers(ad_t ad){
     endLeer();                                  /* bus de datos salida */
    
     ad_resetear_contador(ad);
+    ad_set_modo_ad(ad);
 
     /* Construyo el resultado final A ab B -> Aa bB*/
 
@@ -296,6 +301,7 @@ void ad_to_file(ad_t ad, char *output_file){
 
     output_ad = fopen(file, "w");
     assert(ad->canala != NULL && ad->canalb != NULL);
+    //fprintf(output_ad, "\n<<DEBUG ad.h->ad_to_file() AMBOS CANALES SON EL A>>\n");
     for(i = 0; i < ad->kpc*1024; i++){
           fprintf(output_ad, "canala %i\tcanalb %i\n" , ad->canala[i], ad->canala[i]);
     }
