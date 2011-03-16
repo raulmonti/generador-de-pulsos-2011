@@ -30,7 +30,7 @@ using namespace std;
 #define SYSCALL_EXECUTE_NAME "mainRun"
 #define FASES_FILE_PATH "fases.dat"
 #define INSTRUCCIONES_FILE_PATH "instrucciones.dat"
-#define DEFAULT_CONFIG_FILE "C\\config_conf";
+#define DEFAULT_CONFIG_FILE "config_conf";
 
 TformPrincipal *formPrincipal;
 unsigned int error;
@@ -364,7 +364,7 @@ void __fastcall TformPrincipal::botonParsearHojaClick(TObject *Sender)
         *str << FASES_FILE_PATH;
         *str << " ";
         *str << INSTRUCCIONES_FILE_PATH;
-//        ShowMessage(str->str().c_str());
+        ShowMessage(str->str().c_str());
         error = system(str->str().c_str()); // AGREGAR A error.h TODAS LAS CONSTANTES DE ERROR QUE PUEDE DEVOLVER system()
         if(error != NO_ERROR){
             formPrincipal->botonEjecutar->Enabled = false;
@@ -795,14 +795,9 @@ void __fastcall TformPrincipal::botonEjecutarClick(TObject *Sender)
         *str << formPrincipal->Repeticiones->Text.c_str();
         ShowMessage(str->str().c_str());
         error = system(str->str().c_str());
-        error = system(str->str().c_str());
-        error = system(str->str().c_str());
-        error = system(str->str().c_str());
-        error = system(str->str().c_str());
-        error = system(str->str().c_str());
-        error = system(str->str().c_str());
         if(error != NO_ERROR){
-            ShowMessage(getMessage(error));
+            ShowMessage(error);
+            //ShowMessage(getMessage(error));
         }else{
             ShowMessage("OK");
         }
