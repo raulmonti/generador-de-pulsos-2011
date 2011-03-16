@@ -166,8 +166,8 @@ unsigned int ad_adquirir(ad_t ad){
     //printf("ENTRA\n");
 
     //RERET Y MODO AD:
-    //ad_resetear_contador(ad);
-    //ad_set_modo_ad(ad);
+    ad_resetear_contador(ad);
+    ad_set_modo_ad(ad);
     
     if(!result)          
         result = direccion(0x0b);
@@ -285,7 +285,7 @@ void ad_to_file(ad_t ad, char *output_file){
     sprintf(adq_count, "%d", ad->adq_count);
 
     file[0] = '\0';
-    strcat(file,"adoutput/");
+    //strcat(file,"adoutput/");
     if(output_file != NULL){
         assert(strlen(output_file)<100);
         strcat(file, output_file);
@@ -296,7 +296,7 @@ void ad_to_file(ad_t ad, char *output_file){
         strcat(file,"output");
     //    printf("%s\n",file);
     }    
-    strcat(file,adq_count);
+    //strcat(file,adq_count);
     strcat(file,".txt");
 
     output_ad = fopen(file, "w");
